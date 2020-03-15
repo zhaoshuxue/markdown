@@ -1,51 +1,75 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title></title>
-        <meta charset="UTF-8" />
 
-        <link rel="stylesheet" href="css/editormd.min.css" />
-        <link rel="stylesheet" href="css/editormd.preview.css" />
-    </head>
-    <body>
+<head>
+    <title></title>
+    <meta charset="UTF-8" />
 
-        <div id="editor">
-            <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
-            <textarea style="display:none;">### Hello Editor.md !</textarea>
-        </div>
+    <link rel="stylesheet" href="css/editormd.min.css" />
+    <link rel="stylesheet" href="css/editormd.preview.css" />
+</head>
+
+<body>
+
+    <div id="editor">
+        <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
+        <textarea style="display:none;">### Hello Editor.md !</textarea>
+    </div>
 
 
-        <script src="js/jquery.min.js"></script>
-        <script src="js/editormd.min.js"></script>
-        <!-- <script src="lib/marked.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/editormd.min.js"></script>
+    <!-- <script src="lib/marked.min.js"></script>
         <script src="lib/prettify.min.js"></script> -->
-        <script type="text/javascript">
-            var editor;
-            $(function() {
-                
-                editor = editormd("editor", {
-                    width: "100%",
-                    height: 500,
-                    // markdown: "xxxx",     // dynamic set Markdown text
-                    saveHTMLToTextarea : true,
-                    path : "lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
-                });
+    <script type="text/javascript">
+        var editor;
+        $(function () {
 
-                // var testView = editormd.markdownToHTML("editor", {
-                //     // markdown : "[TOC]\n### Hello world!\n## Heading 2", // Also, you can dynamic set Markdown text
-                //     // htmlDecode : true,  // Enable / disable HTML tag encode.
-                //     // htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
-                // });
-
-                
+            editor = editormd("editor", {
+                width: "100%",
+                height: 500,
+                // markdown: "xxxx",     // dynamic set Markdown text
+                saveHTMLToTextarea: true,
+                path: "lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
             });
 
-            var getMd = function(){
-                console.info(editor.getMarkdown())
-                console.warn(1)
-                console.info(editor.getHTML())
-            }
-        </script>
+            // var testView = editormd.markdownToHTML("editor", {
+            //     // markdown : "[TOC]\n### Hello world!\n## Heading 2", // Also, you can dynamic set Markdown text
+            //     // htmlDecode : true,  // Enable / disable HTML tag encode.
+            //     // htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
+            // });
 
-    </body>
+
+        });
+
+        var getMd = function () {
+            console.info(editor.getMarkdown())
+            console.warn(1)
+            console.info(editor.getHTML())
+        }
+
+        document.addEventListener("paste", function (e) {
+            console.info(e)
+            if (!(e.clipboardData && e.clipboardData.items)) {
+                return;
+            }
+
+            var data = e.clipboardData;
+            for (var i = 0, len = data.items.length; i < len; i++) {
+                var item = data.items[i]
+                console.info(item)
+                if (item.kind === "file") {
+                    var blob = item.getAsFile();
+                    if (blob.size === 0) {
+                        return;
+                    }
+                    console.log(blob);
+                }
+            }
+
+        })
+    </script>
+
+</body>
+
 </html>
