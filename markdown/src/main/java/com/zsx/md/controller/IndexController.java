@@ -1,5 +1,7 @@
 package com.zsx.md.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zsx.md.utils.FileUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import java.util.UUID;
 public class IndexController {
 
     private static String context = "";
+    private static final String filePath = "D:/tmp/1.md";
 
     @GetMapping("/index")
     public String index(Model model) {
@@ -30,12 +33,22 @@ public class IndexController {
     public String save(String text) {
         System.out.println(text);
         context = text;
+        FileUtil.writeFile(text, filePath);
         return "ok";
     }
 
     @GetMapping("/get")
     @ResponseBody
-    public String get() {
-        return context;
+    public JSONObject get() {
+
+        JSONObject json = new JSONObject();
+
+        json.put("text", context);
+        json.put("success", true);
+
+        String text = FileUtil.readFile(filePath);
+        json.put("text", text);
+
+        return json;
     }
 }

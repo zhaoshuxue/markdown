@@ -27,13 +27,13 @@
     var editor;
     $(function () {
 
-        editor = editormd("editor", {
-            width: "100%",
-            height: 500,
-            // markdown: "xxxx",     // dynamic set Markdown text
-            saveHTMLToTextarea: true,
-            path: "/editormd/lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
-        });
+        // editor = editormd("editor", {
+        //     width: "100%",
+        //     height: 500,
+        //     // markdown: "xxxx",     // dynamic set Markdown text
+        //     saveHTMLToTextarea: true,
+        //     path: "/editormd/lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
+        // });
 
         // var testView = editormd.markdownToHTML("editor", {
         //     // markdown : "[TOC]\n### Hello world!\n## Heading 2", // Also, you can dynamic set Markdown text
@@ -42,13 +42,27 @@
         // });
 
 
+        getData();
+
     });
+
+    var initEditor = function(text){
+        if(text == undefined || text == null || text == ""){
+            text = "# 标题"
+        }
+        editor = editormd("editor", {
+            width: "100%",
+            height: 600,
+            markdown: text,
+            path: "/editormd/lib/"
+        })
+    }
 
     var getMd = function () {
         let text = editor.getMarkdown();
         console.info(editor.getMarkdown())
         console.warn(1)
-        console.info(editor.getHTML())
+        // console.info(editor.getHTML())
 
         $.post("/save", {text: text}, function (res) {
             alert(res);
@@ -69,6 +83,10 @@
             contentType: "application/json;charset=UTF-8",
             success: function (res) {
                 console.info(res)
+                if(res && res.success){
+                    initEditor(res.text)
+                }
+                // initEditor(res)
             }
         })
     }
