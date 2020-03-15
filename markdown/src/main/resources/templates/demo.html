@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8"/>
+
+    <link rel="stylesheet" href="/editormd/css/editormd.min.css"/>
+    <link rel="stylesheet" href="/editormd/css/editormd.preview.css"/>
+</head>
+<body>
+
+<div>
+    <button onclick="getMd()">保存</button>
+</div>
+
+<div id="editor">
+    <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
+    <textarea style="display:none;">### Hello Editor.md !</textarea>
+</div>
+
+
+<script src="/editormd/js/jquery.min.js"></script>
+<script src="/editormd/js/editormd.min.js"></script>
+<!-- <script src="lib/marked.min.js"></script>
+<script src="lib/prettify.min.js"></script> -->
+<script type="text/javascript">
+    var editor;
+    $(function () {
+
+        editor = editormd("editor", {
+            width: "100%",
+            height: 500,
+            // markdown: "xxxx",     // dynamic set Markdown text
+            saveHTMLToTextarea: true,
+            path: "/editormd/lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
+        });
+
+        // var testView = editormd.markdownToHTML("editor", {
+        //     // markdown : "[TOC]\n### Hello world!\n## Heading 2", // Also, you can dynamic set Markdown text
+        //     // htmlDecode : true,  // Enable / disable HTML tag encode.
+        //     // htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
+        // });
+
+
+    });
+
+    var getMd = function () {
+        let text = editor.getMarkdown();
+        console.info(editor.getMarkdown())
+        console.warn(1)
+        console.info(editor.getHTML())
+
+        $.post("/save", {text: text}, function (res) {
+            alert(res);
+        })
+    }
+
+
+    function getData() {
+        $.get("/get", function (res) {
+            console.log(res)
+        });
+
+        $.ajax({
+            type: "get",
+            url: "/get",
+            data: {},
+            dataType: "json",
+            contentType: "application/json;charset=UTF-8",
+            success: function (res) {
+                console.info(res)
+            }
+        })
+    }
+
+</script>
+
+</body>
+</html>
