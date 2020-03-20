@@ -10,7 +10,7 @@ spring:
 
   # 数据源连接
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useSSL=false
+    url: jdbc:mysql://localhost:3306/markdown?useSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
