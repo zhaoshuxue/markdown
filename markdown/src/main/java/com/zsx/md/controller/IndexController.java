@@ -28,6 +28,11 @@ public class IndexController {
         return "demo";
     }
 
+    @GetMapping("/ztree")
+    public String ztree(Model model) {
+        return "ztree";
+    }
+
     @PostMapping("/save")
     @ResponseBody
     public String save(String text) {

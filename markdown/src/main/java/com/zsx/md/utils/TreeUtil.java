@@ -20,6 +20,8 @@ public class TreeUtil {
         list.forEach(item -> {
             TreeNode treeNode = JSONObject.parseObject(JSON.toJSONString(item), TreeNode.class);
 
+            treeNode.setName(item.getTitle());
+
             trees.add(treeNode);
         });
 

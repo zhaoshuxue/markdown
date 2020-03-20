@@ -3,6 +3,7 @@ package com.zsx.md;
 import com.alibaba.fastjson.JSON;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
+import com.zsx.md.vo.TreeNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,7 @@ class UnitTest {
 
     @Test
     void test1() {
-		List<Mnote> mnotes = noteService.getNoteListByUserId(1);
+		List<TreeNode> mnotes = noteService.getNoteListByUserId(1);
 
 		System.out.println(JSON.toJSONString(mnotes));
     }
