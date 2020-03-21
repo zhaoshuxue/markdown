@@ -1,6 +1,7 @@
 package com.zsx.md;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
 import com.zsx.md.vo.NoteVO;
@@ -26,6 +27,21 @@ class UnitTest {
     void test3() {
         String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where id = ?";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, 1);
+
+        if (list.size() > 0) {
+            Map<String, Object> map = list.get(0);
+
+            NoteVO mnote = JSONObject.parseObject(JSON.toJSONString(map), NoteVO.class);
+
+            mnote.setOrders(111);
+
+            mnote.setUserId(100);
+
+            mnote.setStatus(0);
+
+            noteService.updateNote(mnote);
+
+        }
 
         System.out.println(JSON.toJSONString(list));
     }

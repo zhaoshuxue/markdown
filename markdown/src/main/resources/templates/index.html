@@ -9,10 +9,19 @@
     <link rel="stylesheet" href="/editormd/css/editormd.min.css"/>
     <link rel="stylesheet" href="/editormd/css/editormd.preview.css"/>
 
+    <link rel="stylesheet" href="/css/index.css"/>
 </head>
 <body>
 
+<header>
+    <div>
+        <button onclick="javascript:initEditor()">新增</button>
+        <button onclick="javascript:save()">保存</button>
+    </div>
+</header>
+
 <div class="container">
+
     <div class="left-menu">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
@@ -24,6 +33,7 @@
         </div>
     </div>
 </div>
+
 
 <script src="/editormd/js/jquery.min.js"></script>
 <script src="/zTree/js/jquery.ztree.core.min.js"></script>
@@ -37,12 +47,14 @@
                 name: "title"
             }
         },
-        // callback: {
-        //     onRightClick: OnRightClick
-        // }
+        callback: {
+            onClick: zTreeOnClick,
+            // onRightClick: OnRightClick
+        }
     };
 
     var editor;
+    var pid;
 
     $(function () {
         getTree();
@@ -55,7 +67,7 @@
     function getTree() {
         $.ajax({
             type: "get",
-            url: "/tree",
+            url: "/note/tree",
             data: {},
             dataType: "json",
             contentType: "application/json;charset=UTF-8",
@@ -123,6 +135,11 @@
             }
         })
     }
+    
+    function zTreeOnClick(event, treeId, treeNode) {
+        alert(treeNode.tId + ", " + treeNode.title);
+    }
+
 
 
 </script>
