@@ -11,7 +11,7 @@ public class TreeNode {
 
     private Integer pid;
 
-    private String name;
+    private String title;
 
     private List<TreeNode> children;
 

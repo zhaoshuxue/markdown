@@ -2,9 +2,12 @@ package com.zsx.md.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.zsx.md.config.PropertiesConfig;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
 import com.zsx.md.utils.TreeUtil;
+import com.zsx.md.vo.NoteVO;
+import com.zsx.md.vo.ResultData;
 import com.zsx.md.vo.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,9 @@ public class NoteServiceImpl implements NoteService {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private PropertiesConfig propertiesConfig;
 
     @Override
     public List<TreeNode> getNoteListByUserId(Integer userId) {
@@ -42,6 +48,25 @@ public class NoteServiceImpl implements NoteService {
 
         logger.info(JSON.toJSONString(tree));
 
+        propertiesConfig.getMdFilePath();
+
         return tree;
+    }
+
+    @Override
+    public ResultData<String> saveNote(NoteVO noteVO) {
+        String sql = "INSERT INTO m_note (pid, user_id, types, title, summary, content, orders, status, create_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getCreatePerson());
+        logger.info("update = {}", update);
+        return null;
+    }
+
+    @Override
+    public ResultData<String> updateNote(NoteVO noteVO) {
+        String sql = "UPDATE m_note SET pid=?, user_id=?, types=?, title=?, summary=?, content=?, orders=?, status=?, update_person=? WHERE (id= ?)";
+        int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getUpdatePerson(), noteVO.getId());
+        logger.info("update = {}", update);
+        return null;
+
     }
 }

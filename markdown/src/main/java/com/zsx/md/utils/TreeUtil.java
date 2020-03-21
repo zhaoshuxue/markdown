@@ -10,7 +10,6 @@ import java.util.List;
 
 public class TreeUtil {
 
-
     public static void main(String[] args) {
 
     }
@@ -19,8 +18,6 @@ public class TreeUtil {
         List<TreeNode> trees = new ArrayList<TreeNode>();
         list.forEach(item -> {
             TreeNode treeNode = JSONObject.parseObject(JSON.toJSONString(item), TreeNode.class);
-
-            treeNode.setName(item.getTitle());
 
             trees.add(treeNode);
         });

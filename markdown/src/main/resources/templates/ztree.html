@@ -16,7 +16,16 @@
 
     var zTreeObj;
     // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
-    var setting = {};
+    var setting = {
+        data: {
+            key: {
+                name: "title"
+            }
+        },
+        callback: {
+            onRightClick: OnRightClick
+        }
+    };
     // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
     // var zNodes = [
     //     {name:"test1", open:true, children:[
@@ -49,10 +58,20 @@
         })
     }
 
-    document.addEventListener("paste", function (e) {
-        console.log(e)
-        console.log(e.clipboardData)
-    })
+
+    function OnRightClick(event, treeId, treeNode) {
+        if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+            zTreeObj.cancelSelectedNode();
+            // showRMenu("root", event.clientX, event.clientY);
+            console.log("root")
+        } else if (treeNode && !treeNode.noR) {
+            zTreeObj.selectNode(treeNode);
+            // showRMenu("node", event.clientX, event.clientY);
+            console.log("node")
+        }
+    }
+
+
 </script>
 
 </body>

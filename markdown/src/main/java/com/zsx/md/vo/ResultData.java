@@ -3,7 +3,7 @@ package com.zsx.md.vo;
 import lombok.Data;
 
 @Data
-public class JsonData<T> {
+public class ResultData<T> {
 
     private boolean success;
 

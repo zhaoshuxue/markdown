@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1 th:text="${name}">test</h1>
+
+    <h2 th:onclick="test([[${name}]])">点击我</h2>
+
+<script>
+    function test(name) {
+        alert("提示" + name)
+    }
+</script>
+</body>
+</html>
