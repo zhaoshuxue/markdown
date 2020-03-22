@@ -2,9 +2,11 @@ package com.zsx.md.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zsx.md.config.PropertiesConfig;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
+import com.zsx.md.utils.FileUtil;
 import com.zsx.md.utils.TreeUtil;
 import com.zsx.md.vo.NoteVO;
 import com.zsx.md.vo.ResultData;
@@ -51,6 +53,31 @@ public class NoteServiceImpl implements NoteService {
         propertiesConfig.getMdFilePath();
 
         return tree;
+    }
+
+    @Override
+    public ResultData<NoteVO> getNote(Integer id) {
+        ResultData<NoteVO> resultData = new ResultData<>();
+
+        String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where id = ?";
+
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, id);
+
+        if (list.size() > 0) {
+            Map<String, Object> map = list.get(0);
+            NoteVO mnote = JSONObject.parseObject(JSON.toJSONString(map), NoteVO.class);
+
+            String content = mnote.getContent();
+
+            String text = FileUtil.readFile(content);
+
+            mnote.setText(text);
+
+            resultData.setSuccess(true);
+            resultData.setData(mnote);
+        }
+
+        return resultData;
     }
 
     @Override

@@ -6,5 +6,7 @@ import lombok.Data;
 @Data
 public class NoteVO extends Mnote {
 
-    private String asdf;
+    private String text;
+
+
 }

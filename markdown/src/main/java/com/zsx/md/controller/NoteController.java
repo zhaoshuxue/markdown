@@ -40,4 +40,8 @@ public class NoteController {
 
     }
 
+    @GetMapping("/get/{id}")
+    public ResultData<NoteVO> getNote(@PathVariable(value = "id") Integer id) {
+        return noteService.getNote(id);
+    }
 }

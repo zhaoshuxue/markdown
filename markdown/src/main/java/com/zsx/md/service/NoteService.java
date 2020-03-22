@@ -11,6 +11,8 @@ public interface NoteService {
 
     List<TreeNode> getNoteListByUserId(Integer userId);
 
+    ResultData<NoteVO> getNote(Integer id);
+
     ResultData<String> saveNote(NoteVO noteVO);
 
     ResultData<String> updateNote(NoteVO noteVO);
