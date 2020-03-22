@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -50,7 +51,6 @@ public class NoteServiceImpl implements NoteService {
 
         logger.info(JSON.toJSONString(tree));
 
-        propertiesConfig.getMdFilePath();
 
         return tree;
     }
@@ -69,7 +69,7 @@ public class NoteServiceImpl implements NoteService {
 
             String content = mnote.getContent();
 
-            String text = FileUtil.readFile(content);
+            String text = FileUtil.readFile(propertiesConfig.getMdFilePath() + content);
 
             mnote.setText(text);
 
@@ -82,6 +82,20 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public ResultData<String> saveNote(NoteVO noteVO) {
+
+        String content = String.valueOf(System.currentTimeMillis()) + ".md";
+
+        FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
+
+//        todo
+        noteVO.setUserId(1);
+        noteVO.setTypes(1);
+        noteVO.setSummary("test");
+        noteVO.setContent(content);
+        noteVO.setOrders(new Random().nextInt(100));
+        noteVO.setStatus(0);
+        noteVO.setCreatePerson("admin");
+
         String sql = "INSERT INTO m_note (pid, user_id, types, title, summary, content, orders, status, create_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getCreatePerson());
         logger.info("update = {}", update);

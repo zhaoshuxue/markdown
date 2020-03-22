@@ -117,12 +117,13 @@
 
     function save() {
 
-        var formData = {
-            title: "1",
-            types: "1",
-            content: "111111",
-        };
+        let text = editor.getMarkdown();
 
+        var formData = {
+            pid: 1,
+            title: "标题1",
+            text: text
+        };
 
         $.ajax({
             type: "post",

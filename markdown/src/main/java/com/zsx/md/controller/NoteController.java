@@ -35,9 +35,10 @@ public class NoteController {
 
 
     @PostMapping("/save")
-    public void save(@RequestBody NoteVO note) {
+    public ResultData save(@RequestBody NoteVO note) {
         logger.info(JSON.toJSONString(note));
 
+        return noteService.saveNote(note);
     }
 
     @GetMapping("/get/{id}")
