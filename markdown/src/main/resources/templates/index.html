@@ -10,6 +10,29 @@
     <link rel="stylesheet" href="/editormd/css/editormd.preview.css"/>
 
     <link rel="stylesheet" href="/css/index.css"/>
+    <style type="text/css">
+        div#rMenu {
+            position: absolute;
+            visibility: hidden;
+            top: 0;
+            background-color: #555;
+            text-align: left;
+            padding: 2px;
+        }
+
+        div#rMenu ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        div#rMenu ul li {
+            margin: 1px 0;
+            padding: 0 5px;
+            cursor: pointer;
+            list-style: none outside none;
+            background-color: #DFDFDF;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,6 +58,17 @@
 </div>
 
 
+<div id="rMenu">
+    <ul>
+        <li id="m_add" onclick="addTreeNode();">增加节点</li>
+        <li id="m_del" onclick="removeTreeNode();">删除节点</li>
+        <li id="m_check" onclick="checkTreeNode(true);">Check节点</li>
+        <li id="m_unCheck" onclick="checkTreeNode(false);">unCheck节点</li>
+        <li id="m_reset" onclick="resetTree();">恢复zTree</li>
+    </ul>
+</div>
+
+
 <script src="/editormd/js/jquery.min.js"></script>
 <script src="/zTree/js/jquery.ztree.core.min.js"></script>
 <script src="/editormd/js/editormd.min.js"></script>
@@ -49,15 +83,18 @@
         },
         callback: {
             onClick: zTreeOnClick,
-            // onRightClick: OnRightClick
+            onRightClick: OnRightClick
         }
     };
 
     var editor;
     var pid;
 
+    var rMenu;
+
     $(function () {
         getTree();
+        rMenu = $("#rMenu");
     });
 
     function initTree(zNodes) {
@@ -73,15 +110,15 @@
             contentType: "application/json;charset=UTF-8",
             success: function (res) {
                 console.info(res)
-                if(res && res.success){
+                if (res && res.success) {
                     initTree(res.data)
                 }
             }
         })
     }
 
-    var initEditor = function(text){
-        if(text == undefined || text == null || text == ""){
+    var initEditor = function (text) {
+        if (text == undefined || text == null || text == "") {
             text = "# 标题"
         }
         editor = editormd("editor", {
@@ -89,26 +126,26 @@
             height: 600,
             markdown: text,
             path: "/editormd/lib/",
-            imageUpload : true,
-            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
         })
     }
 
-    function getData() {
+    function getData(id) {
         // $.get("/get", function (res) {
         //     console.log(res)
         // });
 
         $.ajax({
             type: "get",
-            url: "/get",
+            url: "/note/get/" + id,
             data: {},
             dataType: "json",
             contentType: "application/json;charset=UTF-8",
             success: function (res) {
                 console.info(res)
-                if(res && res.success){
-                    initEditor(res.text)
+                if (res && res.success) {
+                    initEditor(res.data.text)
                 }
                 // initEditor(res)
             }
@@ -131,16 +168,53 @@
             data: JSON.stringify(formData),
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
-            success: function(res){
+            success: function (res) {
                 console.info(res)
             }
         })
     }
-    
+
     function zTreeOnClick(event, treeId, treeNode) {
-        alert(treeNode.tId + ", " + treeNode.title);
+        console.info(treeNode)
+        // alert(treeNode.tId + ", " + treeNode.title);
+        getData(treeNode.id);
     }
 
+    function OnRightClick(event, treeId, treeNode) {
+        console.info(treeNode)
+        console.info("event.clientX : ", event.clientX)
+        console.info("event.clientY : ", event.clientY)
+
+        // if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+        //     zTree.cancelSelectedNode();
+            showRMenu("root", event.clientX, event.clientY);
+        // } else if (treeNode && !treeNode.noR) {
+        //     zTree.selectNode(treeNode);
+        //     showRMenu("node", event.clientX, event.clientY);
+        // }
+    }
+
+    function showRMenu(type, x, y) {
+        $("#rMenu ul").show();
+        y += document.body.scrollTop;
+        x += document.body.scrollLeft;
+        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+
+        $("body").bind("mousedown", onBodyMouseDown);
+    }
+
+    function onBodyMouseDown(event){
+        if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+            rMenu.css({"visibility" : "hidden"});
+        }
+    }
+
+    function hideRMenu() {
+        if (rMenu) rMenu.css({"visibility": "hidden"});
+        $("body").unbind("mousedown", onBodyMouseDown);
+    }
+
+    
 
 </script>
 </body>
