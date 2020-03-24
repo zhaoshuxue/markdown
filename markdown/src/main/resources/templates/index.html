@@ -88,6 +88,8 @@
     };
 
     var editor;
+
+    var mdId;
     var pid;
     var parentId;
 
@@ -137,6 +139,8 @@
         //     console.log(res)
         // });
 
+        mdId = id;
+
         $.ajax({
             type: "get",
             url: "/note/get/" + id,
@@ -157,7 +161,13 @@
 
         let text = editor.getMarkdown();
 
+        if(mdId){
+
+        }else{
+            mdId = null;
+        }
         var formData = {
+            id: mdId,
             pid: pid,
             title: "标题1",
             text: text
@@ -220,12 +230,14 @@
     function addTreeNode() {
         hideRMenu();
         initEditor();
+        mdId = undefined
         console.log("pid = ", pid)
     }
     
     function addTreeNode2() {
         hideRMenu();
         initEditor();
+        mdId = undefined
         console.log("pid = ", pid)
         console.log("parentId = ", parentId)
         pid = parentId;

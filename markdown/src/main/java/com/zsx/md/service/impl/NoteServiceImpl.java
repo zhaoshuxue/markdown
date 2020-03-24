@@ -3,6 +3,7 @@ package com.zsx.md.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.xml.internal.bind.v2.TODO;
 import com.zsx.md.config.PropertiesConfig;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
@@ -104,9 +105,20 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public ResultData<String> updateNote(NoteVO noteVO) {
-        String sql = "UPDATE m_note SET pid=?, user_id=?, types=?, title=?, summary=?, content=?, orders=?, status=?, update_person=? WHERE (id= ?)";
-        int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getUpdatePerson(), noteVO.getId());
-        logger.info("update = {}", update);
+        ResultData<NoteVO> resultData = this.getNote(noteVO.getId());
+        if (resultData.isSuccess()) {
+            NoteVO data = resultData.getData();
+
+            String content = data.getContent();
+            FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
+
+//            TODO
+        } else {
+            this.saveNote(noteVO);
+        }
+//        String sql = "UPDATE m_note SET pid=?, user_id=?, types=?, title=?, summary=?, content=?, orders=?, status=?, update_person=? WHERE (id= ?)";
+//        int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getUpdatePerson(), noteVO.getId());
+//        logger.info("update = {}", update);
         return null;
 
     }
