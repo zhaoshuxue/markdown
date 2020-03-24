@@ -60,11 +60,11 @@
 
 <div id="rMenu">
     <ul>
-        <li id="m_add" onclick="addTreeNode();">增加节点</li>
-        <li id="m_del" onclick="removeTreeNode();">删除节点</li>
+        <li id="m_add" onclick="addTreeNode();">新建笔记</li>
+        <li id="m_del" onclick="addTreeNode2();">新建笔记（同级）</li>
         <li id="m_check" onclick="checkTreeNode(true);">Check节点</li>
-        <li id="m_unCheck" onclick="checkTreeNode(false);">unCheck节点</li>
-        <li id="m_reset" onclick="resetTree();">恢复zTree</li>
+        <li id="m_unCheck" onclick="checkTreeNode(false);">重命名</li>
+        <li id="m_reset" onclick="resetTree();">删除</li>
     </ul>
 </div>
 
@@ -89,6 +89,7 @@
 
     var editor;
     var pid;
+    var parentId;
 
     var rMenu;
 
@@ -157,7 +158,7 @@
         let text = editor.getMarkdown();
 
         var formData = {
-            pid: 1,
+            pid: pid,
             title: "标题1",
             text: text
         };
@@ -182,6 +183,8 @@
 
     function OnRightClick(event, treeId, treeNode) {
         console.info(treeNode)
+        pid = treeNode.id;
+        parentId = treeNode.pid;
         console.info("event.clientX : ", event.clientX)
         console.info("event.clientY : ", event.clientY)
 
@@ -214,7 +217,21 @@
         $("body").unbind("mousedown", onBodyMouseDown);
     }
 
+    function addTreeNode() {
+        hideRMenu();
+        initEditor();
+        console.log("pid = ", pid)
+    }
     
+    function addTreeNode2() {
+        hideRMenu();
+        initEditor();
+        console.log("pid = ", pid)
+        console.log("parentId = ", parentId)
+        pid = parentId;
+        console.log("修改后pid = ", pid)
+    }
+
 
 </script>
 </body>
