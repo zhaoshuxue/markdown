@@ -50,6 +50,9 @@
     </div>
 
     <div class="main">
+        <div>
+            <input class="title-cls" id="title" placeholder="标题" />
+        </div>
         <div id="editor">
             <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
             <textarea style="display:none;">### Hello Editor.md !</textarea>
@@ -150,6 +153,7 @@
             success: function (res) {
                 console.info(res)
                 if (res && res.success) {
+                    $("#title").val(res.data.title);
                     initEditor(res.data.text)
                 }
                 // initEditor(res)
@@ -169,7 +173,7 @@
         var formData = {
             id: mdId,
             pid: pid,
-            title: "标题1",
+            title: $("#title").val(),
             text: text
         };
 
