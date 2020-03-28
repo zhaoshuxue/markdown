@@ -86,6 +86,7 @@
 
 <script src="/editormd/js/jquery.min.js"></script>
 <script src="/zTree/js/jquery.ztree.core.min.js"></script>
+<script src="/zTree/js/jquery.ztree.exedit.js"></script>
 <script src="/editormd/js/editormd.min.js"></script>
 <script>
     var zTreeObj;
@@ -96,9 +97,14 @@
                 name: "title"
             }
         },
+        edit: {
+            enable: true
+        },
         callback: {
             onClick: zTreeOnClick,
-            onRightClick: OnRightClick
+            onRightClick: OnRightClick,
+            onDrag: onDrag,
+            onDrop: onDrop,
         }
     };
 
@@ -287,6 +293,23 @@
         if (res) {
             console.info(res);
         }
+    }
+
+
+    function onDrag(event, treeId, treeNodes) {
+        console.info("onDrag");
+        console.info(treeId);
+        console.info(treeNodes);
+    }
+
+    function onDrop(event, treeId, treeNodes, targetNode, moveType, isCopy) {
+
+        console.info("onDrop");
+        console.info(treeId);
+        console.info(treeNodes);
+        console.info(targetNode);
+        console.info(moveType);
+        console.info(isCopy);
     }
 
 </script>
