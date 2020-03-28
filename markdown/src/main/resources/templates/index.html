@@ -62,7 +62,7 @@
 
     <div class="main">
         <div>
-            <input class="title-cls" id="title" placeholder="标题" />
+            <input class="title-cls" id="title" placeholder="标题"/>
             <button class="save-btn" id="save" onclick="javascript:save()">保存</button>
         </div>
         <div id="editor">
@@ -78,7 +78,7 @@
         <li id="m_add" onclick="addTreeNode();">新建笔记</li>
         <li id="m_del" onclick="addTreeNode2();">新建笔记（同级）</li>
         <li id="m_check" onclick="checkTreeNode(true);">Check节点</li>
-        <li id="m_unCheck" onclick="checkTreeNode(false);">重命名</li>
+        <li id="m_unCheck" onclick="rename();">重命名</li>
         <li id="m_reset" onclick="resetTree();">删除</li>
     </ul>
 </div>
@@ -107,6 +107,8 @@
     var mdId;
     var pid;
     var parentId;
+
+    var curTreeNode;
 
     var rMenu;
 
@@ -179,9 +181,9 @@
 
         let text = editor.getMarkdown();
 
-        if(mdId){
+        if (mdId) {
 
-        }else{
+        } else {
             mdId = null;
         }
         var formData = {
@@ -199,7 +201,7 @@
             dataType: "json",
             success: function (res) {
                 console.info(res)
-                if(res && res.success){
+                if (res && res.success) {
                     alert(res.message);
                     // zTreeObj.refresh();
                     getTree();
@@ -211,11 +213,16 @@
     function zTreeOnClick(event, treeId, treeNode) {
         console.info(treeNode)
         // alert(treeNode.tId + ", " + treeNode.title);
-        getData(treeNode.id);
+        if (treeNode.pid == 0) {
+            zTreeObj.expandNode(treeNode);
+        } else {
+            getData(treeNode.id);
+        }
     }
 
     function OnRightClick(event, treeId, treeNode) {
         console.info(treeNode)
+        curTreeNode = treeNode;
         pid = treeNode.id;
         parentId = treeNode.pid;
         console.info("event.clientX : ", event.clientX)
@@ -223,7 +230,7 @@
 
         // if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
         //     zTree.cancelSelectedNode();
-            showRMenu("root", event.clientX, event.clientY);
+        showRMenu("root", event.clientX, event.clientY);
         // } else if (treeNode && !treeNode.noR) {
         //     zTree.selectNode(treeNode);
         //     showRMenu("node", event.clientX, event.clientY);
@@ -235,14 +242,14 @@
         y += document.body.scrollTop;
         x += document.body.scrollLeft;
         x += 10; // 优化体验
-        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+        rMenu.css({"top": y + "px", "left": x + "px", "visibility": "visible"});
 
         $("body").bind("mousedown", onBodyMouseDown);
     }
 
-    function onBodyMouseDown(event){
-        if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
-            rMenu.css({"visibility" : "hidden"});
+    function onBodyMouseDown(event) {
+        if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
+            rMenu.css({"visibility": "hidden"});
         }
     }
 
@@ -257,7 +264,7 @@
         mdId = undefined
         console.log("pid = ", pid)
     }
-    
+
     function addTreeNode2() {
         hideRMenu();
         initEditor();
@@ -268,9 +275,18 @@
         console.log("修改后pid = ", pid)
     }
 
-    function doNothing(){
-        window.event.returnValue=false;
+    function doNothing() {
+        window.event.returnValue = false;
         return false;
+    }
+
+    function rename() {
+        hideRMenu();
+        console.log(curTreeNode)
+        var res = prompt("重命名", curTreeNode.title);
+        if (res) {
+            console.info(res);
+        }
     }
 
 </script>
