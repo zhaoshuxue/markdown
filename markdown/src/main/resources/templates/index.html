@@ -32,13 +32,21 @@
             list-style: none outside none;
             background-color: #DFDFDF;
         }
+
+        .add-cls {
+            background-color: dodgerblue;
+            padding: 10px 30px;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
 
 <header>
     <div>
-        <button onclick="javascript:initEditor()">新增</button>
+        <button class="add-cls" onclick="javascript:initEditor()">+ 新增</button>
         <button onclick="javascript:save()">保存</button>
     </div>
 </header>
@@ -154,6 +162,7 @@
                 console.info(res)
                 if (res && res.success) {
                     $("#title").val(res.data.title);
+                    $("#title").show();
                     initEditor(res.data.text)
                 }
                 // initEditor(res)
