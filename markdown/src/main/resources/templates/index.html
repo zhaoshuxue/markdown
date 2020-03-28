@@ -274,6 +274,9 @@
         initEditor();
         mdId = undefined
         console.log("pid = ", pid)
+
+        $("#title").show();
+        $("#save").show();
     }
 
     function addTreeNode2() {
@@ -284,6 +287,9 @@
         console.log("parentId = ", parentId)
         pid = parentId;
         console.log("修改后pid = ", pid)
+
+        $("#title").show();
+        $("#save").show();
     }
 
     function doNothing() {
@@ -305,6 +311,10 @@
         console.info("onDrag");
         console.info(treeId);
         console.info(treeNodes);
+        if(treeNodes){
+            var id = treeNodes[0].id;
+            console.info("id = ", id);
+        }
     }
 
     function onDrop(event, treeId, treeNodes, targetNode, moveType, isCopy) {
@@ -315,6 +325,10 @@
         console.info(targetNode);
         console.info(moveType);
         console.info(isCopy);
+        if(targetNode){
+            console.info("移动到 id = "+targetNode.id + ((moveType == 'inner')? ' 子节点':(moveType == 'prev')?' 前边':'后边'));
+        }
+
     }
 
 </script>
