@@ -100,7 +100,8 @@ public class NoteServiceImpl implements NoteService {
         String sql = "INSERT INTO m_note (pid, user_id, types, title, summary, content, orders, status, create_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getCreatePerson());
         logger.info("update = {}", update);
-        return null;
+
+        return ResultData.build(true, "保存成功", "");
     }
 
     @Override
@@ -113,13 +114,12 @@ public class NoteServiceImpl implements NoteService {
             FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
 
 //            TODO
+            String sql = "UPDATE m_note SET title=?, content=?, update_person=? WHERE (id= ?)";
+            int update = jdbcTemplate.update(sql, noteVO.getTitle(), content, noteVO.getUpdatePerson(), data.getId());
         } else {
             this.saveNote(noteVO);
         }
-//        String sql = "UPDATE m_note SET pid=?, user_id=?, types=?, title=?, summary=?, content=?, orders=?, status=?, update_person=? WHERE (id= ?)";
-//        int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getUpdatePerson(), noteVO.getId());
 //        logger.info("update = {}", update);
-        return null;
-
+        return ResultData.build(true, "保存成功", "");
     }
 }

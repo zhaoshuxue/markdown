@@ -1,5 +1,7 @@
 html, body {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -23,11 +25,22 @@ html, body {
 
 .main .title-cls {
     display: none;
-    width: 100%;
+    width: 90%;
     height: 34px;
     border: none;
     font-size: 22px;
     border-bottom: 1px solid #ccc;
+}
+
+.main .save-btn {
+    display: none;
+    width: 8%;
+    height: 34px;
+    border-radius: 20px;
+    background-color: grey;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 

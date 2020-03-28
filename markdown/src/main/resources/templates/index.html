@@ -18,6 +18,7 @@
             background-color: #555;
             text-align: left;
             padding: 2px;
+            z-index: 9999999;
         }
 
         div#rMenu ul {
@@ -39,27 +40,30 @@
             border-radius: 20px;
             color: #fff;
             font-size: 18px;
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="doNothing()">
 
-<header>
-    <div>
-        <button class="add-cls" onclick="javascript:initEditor()">+ 新增</button>
-        <button onclick="javascript:save()">保存</button>
-    </div>
-</header>
+<!--<header>-->
+<!--    <div>-->
+<!--        -->
+<!--    </div>-->
+<!--</header>-->
 
 <div class="container">
 
     <div class="left-menu">
+        <button class="add-cls" onclick="javascript:initEditor()">+ 新增</button>
+
         <ul id="treeDemo" class="ztree"></ul>
     </div>
 
     <div class="main">
         <div>
             <input class="title-cls" id="title" placeholder="标题" />
+            <button class="save-btn" id="save" onclick="javascript:save()">保存</button>
         </div>
         <div id="editor">
             <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
@@ -163,6 +167,7 @@
                 if (res && res.success) {
                     $("#title").val(res.data.title);
                     $("#title").show();
+                    $("#save").show();
                     initEditor(res.data.text)
                 }
                 // initEditor(res)
@@ -194,6 +199,11 @@
             dataType: "json",
             success: function (res) {
                 console.info(res)
+                if(res && res.success){
+                    alert(res.message);
+                    // zTreeObj.refresh();
+                    getTree();
+                }
             }
         })
     }
@@ -224,6 +234,7 @@
         $("#rMenu ul").show();
         y += document.body.scrollTop;
         x += document.body.scrollLeft;
+        x += 10; // 优化体验
         rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
 
         $("body").bind("mousedown", onBodyMouseDown);
@@ -257,6 +268,10 @@
         console.log("修改后pid = ", pid)
     }
 
+    function doNothing(){
+        window.event.returnValue=false;
+        return false;
+    }
 
 </script>
 </body>

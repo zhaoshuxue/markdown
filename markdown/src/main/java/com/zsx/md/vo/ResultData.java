@@ -13,4 +13,12 @@ public class ResultData<T> {
 
     private T data;
 
+    public static ResultData build(boolean success, String message, Object data) {
+        ResultData<Object> resultData = new ResultData<>();
+        resultData.setSuccess(success);
+        resultData.setMessage(message);
+        resultData.setData(data);
+        return resultData;
+    }
+
 }
