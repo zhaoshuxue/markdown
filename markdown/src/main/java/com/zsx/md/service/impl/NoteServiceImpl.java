@@ -88,13 +88,13 @@ public class NoteServiceImpl implements NoteService {
     public ResultData<String> saveNote(NoteVO noteVO) {
 
         String content = String.valueOf(System.currentTimeMillis()) + ".md";
-
+//        FileUtil.checkFileExist(propertiesConfig.getMdFilePath() + "note-");
         FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
 
 //        todo
         noteVO.setUserId(1);
         noteVO.setTypes(1);
-        noteVO.setSummary("test");
+        noteVO.setSummary("");
         noteVO.setContent(content);
         noteVO.setOrders(new Random().nextInt(100));
         noteVO.setStatus(0);

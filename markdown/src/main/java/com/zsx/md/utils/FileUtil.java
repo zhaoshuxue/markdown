@@ -12,6 +12,12 @@ import java.util.List;
 
 public class FileUtil {
 
+    public static void checkFileExist(String dirPath) {
+        File file = new File(dirPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
     public static void writeFile(String text, String filePath) {
         Path path = Paths.get(filePath);

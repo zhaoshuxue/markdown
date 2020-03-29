@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.zsx</groupId>
 	<artifactId>markdown</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<packaging>war</packaging>
 	<name>markdown</name>
 	<description>markdown project</description>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.66</version>
+			<version>1.2.67</version>
 		</dependency>
 
 		<dependency>

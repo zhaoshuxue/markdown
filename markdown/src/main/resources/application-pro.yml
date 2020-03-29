@@ -1,0 +1,29 @@
+
+
+
+
+#
+spring:
+  thymeleaf:
+    # 关闭缓存
+    cache: false
+
+  # 数据源连接
+  datasource:
+    url: jdbc:mysql://localhost:3306/markdown?useSSL=false
+    username: mark
+    password: mark
+    driver-class-name: com.mysql.jdbc.Driver
+
+  # encoding
+  http:
+    encoding:
+      enabled: true
+      charset: utf-8
+      force: true
+
+
+
+
+
+mdFilePath: /mnt/mdfile/note2020/
