@@ -6,6 +6,7 @@ import com.zsx.md.entity.Mnote;
 import com.zsx.md.vo.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TreeUtil {
@@ -45,6 +46,18 @@ public class TreeUtil {
             }
         }
         return treeNode;
+    }
+
+    public static List<TreeNode> sortTree(List<TreeNode> tree) {
+        tree.sort(Comparator.comparing(TreeNode::getOrders));
+
+        for (TreeNode treeNode : tree) {
+            List<TreeNode> children = treeNode.getChildren();
+            if (children != null) {
+                sortTree(children);
+            }
+        }
+        return tree;
     }
 
 }

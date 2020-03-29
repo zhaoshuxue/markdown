@@ -13,6 +13,8 @@ public class TreeNode {
 
     private String title;
 
+    private Integer orders;
+
     private List<TreeNode> children;
 
 }

@@ -50,14 +50,15 @@ public class NoteServiceImpl implements NoteService {
 
         List<TreeNode> tree = TreeUtil.buildTree(treeNodes);
 
-        logger.info(JSON.toJSONString(tree));
+        tree = TreeUtil.sortTree(tree);
 
+        logger.info(JSON.toJSONString(tree));
 
         return tree;
     }
 
     @Override
-    public ResultData<NoteVO> getNote(Integer id) {
+    public ResultData<NoteVO> getNote(Integer id, boolean getContent) {
         ResultData<NoteVO> resultData = new ResultData<>();
 
         String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where id = ?";
@@ -68,11 +69,13 @@ public class NoteServiceImpl implements NoteService {
             Map<String, Object> map = list.get(0);
             NoteVO mnote = JSONObject.parseObject(JSON.toJSONString(map), NoteVO.class);
 
-            String content = mnote.getContent();
+            if (getContent) {
+                String content = mnote.getContent();
 
-            String text = FileUtil.readFile(propertiesConfig.getMdFilePath() + content);
+                String text = FileUtil.readFile(propertiesConfig.getMdFilePath() + content);
 
-            mnote.setText(text);
+                mnote.setText(text);
+            }
 
             resultData.setSuccess(true);
             resultData.setData(mnote);
@@ -106,7 +109,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public ResultData<String> updateNote(NoteVO noteVO) {
-        ResultData<NoteVO> resultData = this.getNote(noteVO.getId());
+        ResultData<NoteVO> resultData = this.getNote(noteVO.getId(), false);
         if (resultData.isSuccess()) {
             NoteVO data = resultData.getData();
 
@@ -121,5 +124,63 @@ public class NoteServiceImpl implements NoteService {
         }
 //        logger.info("update = {}", update);
         return ResultData.build(true, "保存成功", "");
+    }
+
+
+    /**
+     * 移动
+     *
+     * @param id     被移动的节点id
+     * @param target 目标节点id
+     * @param type   移动类型， 1：成为目标子节点，2：成为前节点，3：成为后节点
+     * @return
+     */
+    @Override
+    public ResultData<String> moveNode(Integer id, Integer target, Integer type) {
+        ResultData<String> resultData = new ResultData<>();
+        if (id == null || target == null || type == null) {
+            resultData.setSuccess(false);
+            resultData.setMessage("参数错误");
+            return resultData;
+        }
+
+        ResultData<NoteVO> noteResultData = this.getNote(id, false);
+        NoteVO note = noteResultData.getData();
+
+        if (type == 1) {
+            // 子节点，直接修改pid即可
+            String sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
+            int update = jdbcTemplate.update(sql, target, 1, note.getUpdatePerson(), note.getId());
+
+        } else if (type == 2) {
+            // 成为前节点
+            ResultData<NoteVO> targetResultData = this.getNote(target, false);
+            NoteVO targetNode = targetResultData.getData();
+            // 让目标及下面的节点的排序orders全部+1
+            String sql = "UPDATE m_note SET orders=orders+1, update_person=? WHERE (pid= ? and orders >= ?)";
+            jdbcTemplate.update(sql, note.getUpdatePerson(), targetNode.getPid(), targetNode.getOrders());
+
+            // 接着 把 节点 替换 目标节点 的位置
+            sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
+            jdbcTemplate.update(sql, targetNode.getPid(), targetNode.getOrders(), note.getUpdatePerson(), note.getId());
+
+        } else if (type == 3) {
+            // 成为后节点
+            ResultData<NoteVO> targetResultData = this.getNote(target, false);
+            NoteVO targetNode = targetResultData.getData();
+
+            // 让目标下面的节点的排序orders全部+1
+            String sql = "UPDATE m_note SET orders=orders+1, update_person=? WHERE (pid= ? and orders > ?)";
+            jdbcTemplate.update(sql, note.getUpdatePerson(), targetNode.getPid(), targetNode.getOrders());
+
+            // 接着 把 节点 放到 目标节点 的排序下面的位置
+            sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
+            jdbcTemplate.update(sql, targetNode.getPid(), targetNode.getOrders() + 1, note.getUpdatePerson(), note.getId());
+        } else {
+            resultData.setSuccess(false);
+            resultData.setMessage("参数type错误");
+        }
+
+        return resultData;
     }
 }

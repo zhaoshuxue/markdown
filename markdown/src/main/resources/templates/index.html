@@ -120,6 +120,7 @@
     var parentId;
 
     var curTreeNode;
+    var moveTreeNode;
 
     var rMenu;
 
@@ -311,9 +312,10 @@
         console.info("onDrag");
         console.info(treeId);
         console.info(treeNodes);
-        if(treeNodes){
+        if (treeNodes) {
             var id = treeNodes[0].id;
             console.info("id = ", id);
+            moveTreeNode = treeNodes[0];
         }
     }
 
@@ -325,8 +327,30 @@
         console.info(targetNode);
         console.info(moveType);
         console.info(isCopy);
-        if(targetNode){
-            console.info("移动到 id = "+targetNode.id + ((moveType == 'inner')? ' 子节点':(moveType == 'prev')?' 前边':'后边'));
+        if (targetNode) {
+            console.info("移动到 id = " + targetNode.id + ((moveType == 'inner') ? ' 子节点' : (moveType == 'prev') ? ' 前边' : '后边'));
+
+            var type = moveType == 'inner' ? 1 : moveType == 'prev' ? 2 : 3;
+
+            let data = {
+                id: moveTreeNode.id,
+                target: targetNode.id,
+                type: type
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/note/move",
+                data: data,
+                success: function (res) {
+                    console.info(res)
+                    if (res && res.success) {
+                        // alert(res.message);
+                        // zTreeObj.refresh();
+                        getTree();
+                    }
+                }
+            })
         }
 
     }

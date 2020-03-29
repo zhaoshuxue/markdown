@@ -38,7 +38,7 @@ public class NoteController {
         logger.info(JSON.toJSONString(note));
         if (note.getId() == null) {
             return noteService.saveNote(note);
-        }else{
+        } else {
             return noteService.updateNote(note);
         }
 //        return noteService.saveNote(note);
@@ -46,6 +46,23 @@ public class NoteController {
 
     @GetMapping("/get/{id}")
     public ResultData<NoteVO> getNote(@PathVariable(value = "id") Integer id) {
-        return noteService.getNote(id);
+        return noteService.getNote(id, true);
+    }
+
+    /**
+     * 拖拽移动节点
+     *
+     * @param id     被移动的节点id
+     * @param target 目标节点id
+     * @param type   移动类型
+     * @return
+     */
+    @PostMapping("/move")
+    public ResultData moveNode(
+            @RequestParam(value = "id") Integer id,
+            @RequestParam(value = "target") Integer target,
+            @RequestParam(value = "type") Integer type
+    ) {
+        return noteService.moveNode(id, target, type);
     }
 }
