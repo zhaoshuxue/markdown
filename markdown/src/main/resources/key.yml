@@ -1,0 +1,16 @@
+# 允许访问的url
+allowurl:
+  urls:
+    - /
+    - /login
+    - /register
+    - /validateCode
+    - /loginAction
+    - /registerAction
+    - /showReport
+    - /showPerson
+    - /reportHistory
+    - /api/eye/searchPerson
+    - /api/eye/getReportHistory
+    - /api/eye/getEyeReport
+    - /api/person/getPersonInfo
