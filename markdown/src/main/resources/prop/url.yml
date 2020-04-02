@@ -2,6 +2,7 @@
 allowurl:
   urls:
     - /
+    - /index
     - /login
     - /register
     - /validateCode
