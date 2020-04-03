@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.List;
 
 @RestController
 @RequestMapping("/note")
-public class NoteController {
+public class NoteController extends BaseController{
 
     private static Logger logger = LoggerFactory.getLogger(NoteController.class);
 
@@ -23,7 +25,22 @@ public class NoteController {
 
 
     @GetMapping("tree")
-    public ResultData asdf() {
+    public ResultData asdf(HttpServletRequest request) {
+
+//        System.out.println(JSON.toJSONString(request));
+//        System.out.println(JSON.toJSONString(request.getHeaderNames()));
+
+        System.out.println(getHeaderUser(request));
+
+//        Enumeration<String> headerNames = request.getHeaderNames();
+//        while (headerNames.hasMoreElements()) {
+//            String header = headerNames.nextElement();
+//            String header1 = request.getHeader(header);
+//            System.out.println("header : " + header + " = " + header1);
+//        }
+
+//        ["host","connection","pragma","cache-control","accept","sec-fetch-dest","user","x-requested-with","user-agent","content-type","sec-fetch-site","sec-fetch-mode","referer","accept-encoding","accept-language","cookie"]
+
         List<TreeNode> list = noteService.getNoteListByUserId(1);
 
         ResultData<List<TreeNode>> jsonData = new ResultData<>();

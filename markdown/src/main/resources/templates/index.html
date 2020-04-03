@@ -139,6 +139,9 @@
             url: "/note/tree",
             data: {},
             dataType: "json",
+            beforeSend:function(xhr){
+                xhr.setRequestHeader("User","test123");
+            },
             contentType: "application/json;charset=UTF-8",
             success: function (res) {
                 console.info(res)
