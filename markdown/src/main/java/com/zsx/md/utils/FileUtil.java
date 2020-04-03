@@ -31,7 +31,12 @@ public class FileUtil {
 
     public static String readFile(String filePath) {
         StringBuilder result = new StringBuilder();
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return "";
+        }
         Path path = Paths.get(filePath);
+
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String text = null;
             List<String> list = new ArrayList<>();
