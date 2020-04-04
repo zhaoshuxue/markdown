@@ -9,6 +9,7 @@ public class BaseController {
         System.out.println(request.getSession().getId());
         System.out.println(request.getRequestedSessionId());
 
+
         return request.getHeader(header);
     }
 
