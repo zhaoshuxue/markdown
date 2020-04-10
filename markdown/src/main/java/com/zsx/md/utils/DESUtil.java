@@ -16,21 +16,21 @@ public class DESUtil {
         byte[] key = initKey();
         System.out.println("key: " + bytesToHex(key));
 
-        byte[] encrypt = encrypt(data.getBytes(), key);
-        System.out.println("加密结果为： " + bytesToHex(encrypt));
+//        key = hexToBytes("zhao");
 
-        byte[] decrypt = decrypt(encrypt, key);
+//        byte[] encrypt = encrypt(data.getBytes(), key);
+//        System.out.println("加密结果为： " + bytesToHex(encrypt));
+//
+//        byte[] decrypt = decrypt(encrypt, key);
+//        System.out.println("解密结果： " + new String(decrypt));
+
+//        key: fb9ea762a8d9d662
+//        加密结果为： 94fa4a587740d7c8
+//        解密结果： shuxue
+
+        byte[] decrypt = decrypt(hexToBytes("aa7e378005bf3ae3"), hexToBytes("70ea987c57c20eb0"));
         System.out.println("解密结果： " + new String(decrypt));
 
-        /*
-        System.out.println("DES KEY : " + BytesToHex.fromBytesToHex(desKey));
-        byte[] desResult = DESUtil.encrypt(DATA.getBytes(), desKey);
-        System.out.println(DATA + ">>>DES 加密结果>>>" + BytesToHex.fromBytesToHex(desResult));
-
-        byte[] desPlain = DESUtil.decrypt(desResult, desKey);
-        System.out.println(DATA + ">>>DES 解密结果>>>" + new String(desPlain));
-    }
-         */
 
     }
 
@@ -98,6 +98,19 @@ public class DESUtil {
             sb.append(hex);
         }
         return sb.toString();
+    }
+
+
+    public static byte[] hexToBytes(String hex) {
+        hex = hex.length() % 2 != 0 ? "0" + hex : hex;
+
+        byte[] b = new byte[hex.length() / 2];
+        for (int i = 0; i < b.length; i++) {
+            int index = i * 2;
+            int v = Integer.parseInt(hex.substring(index, index + 2), 16);
+            b[i] = (byte) v;
+        }
+        return b;
     }
 
 }
