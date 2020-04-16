@@ -7,9 +7,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class DESUtil {
 
-
     private static final String DES = "DES";
-
+    private static final String key = "fb9ea762a8d9d662";
 
     public static void main(String[] args) throws Exception {
         String data = "shuxue";
@@ -33,6 +32,55 @@ public class DESUtil {
 
 
     }
+
+    /**
+     * 加密
+     *
+     * @param data
+     * @return
+     */
+    public static String encrypt(String data) {
+        try {
+            byte[] bytes = encrypt(hexToBytes(data), hexToBytes(key));
+            return bytesToHex(bytes);
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 解密
+     *
+     * @param data
+     * @return
+     */
+    public static String decrypt(String data) {
+        try {
+            byte[] bytes = decrypt(hexToBytes(data), hexToBytes(key));
+            return new String(bytes);
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**
      * 生成密钥
@@ -59,7 +107,7 @@ public class DESUtil {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public static byte[] encrypt(byte[] data, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    private static byte[] encrypt(byte[] data, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         SecretKeySpec secretKey = new SecretKeySpec(key, DES);
         Cipher cipher = Cipher.getInstance(DES);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
@@ -79,7 +127,7 @@ public class DESUtil {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    public static byte[] decrypt(byte[] data, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    private static byte[] decrypt(byte[] data, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         SecretKeySpec secretKey = new SecretKeySpec(key, DES);
         Cipher cipher = Cipher.getInstance(DES);
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
@@ -88,7 +136,7 @@ public class DESUtil {
     }
 
 
-    public static String bytesToHex(byte[] bytes) {
+    private static String bytesToHex(byte[] bytes) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < bytes.length; i++) {
             String hex = Integer.toHexString(bytes[i] & 0xFF);
