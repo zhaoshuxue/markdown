@@ -149,7 +149,7 @@ public class DESUtil {
     }
 
 
-    public static byte[] hexToBytes(String hex) {
+    private static byte[] hexToBytes(String hex) {
         hex = hex.length() % 2 != 0 ? "0" + hex : hex;
 
         byte[] b = new byte[hex.length() / 2];

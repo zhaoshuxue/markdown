@@ -1,5 +1,6 @@
 package com.zsx.md.controller;
 
+import com.zsx.md.utils.DESUtil;
 import com.zsx.md.vo.ResultData;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,8 @@ public class LoginController extends BaseController {
             @RequestParam(value = "token") String token) {
         System.out.println(username);
         System.out.println(password);
+        String encrypt = DESUtil.encrypt(password);
+        System.out.println(encrypt);
         System.out.println(token);
         return ResultData.build(true, "", null);
     }
