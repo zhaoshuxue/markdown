@@ -37,7 +37,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (session.getAttribute("userName") == null) {
+        if (session.getAttribute("username") == null) {
 
             throw new MyException("404", "page not found");
 //            throw new RuntimeException("未登录");

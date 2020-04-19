@@ -4,6 +4,7 @@ allowurl:
     - /
     - /index
     - /login
+    - /login/in
     - /register
     - /validateCode
     - /loginAction
