@@ -27,7 +27,7 @@ kisso:
   config:
     sign-key: 9t0pwxGqQSkAb2JCs9Gd7n+dI5+A42iymo1C02r9C2RGiKStYln/IK2GkI/q0/gtoBouW80pJQNaSH6Tk2SFIQ==
     cookie-name: kisso
-    login-url: http://sso.funimg.top/
+    login-url: http://
 
 
 
