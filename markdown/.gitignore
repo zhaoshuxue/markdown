@@ -31,4 +31,5 @@ build/
 .vscode/
 
 ### 自定义
+application-dev.yml
 application-pro.yml
