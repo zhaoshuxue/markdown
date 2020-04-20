@@ -1,6 +1,8 @@
 package com.zsx.md.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.kisso.SSOHelper;
+import com.baomidou.kisso.security.token.SSOToken;
 import com.zsx.md.service.NoteService;
 import com.zsx.md.vo.ResultData;
 import com.zsx.md.vo.NoteVO;
@@ -29,6 +31,10 @@ public class NoteController extends BaseController{
 
 //        System.out.println(JSON.toJSONString(request));
 //        System.out.println(JSON.toJSONString(request.getHeaderNames()));
+
+        SSOToken ssoToken = SSOHelper.getSSOToken(request);
+        System.out.println("打印ssoToken");
+        System.out.println(JSON.toJSONString(ssoToken));
 
         System.out.println(getHeaderUser(request));
 
