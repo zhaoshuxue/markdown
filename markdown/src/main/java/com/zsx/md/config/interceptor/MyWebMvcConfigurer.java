@@ -16,6 +16,7 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(new AuthInterceptor())
+        System.out.println("加载拦截器");
         registry.addInterceptor(new SSOSpringInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(urls);
