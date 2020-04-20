@@ -9,9 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MyWebMvcConfigurer implements WebMvcConfigurer {
 
     private static String[] urls = new String[]{
-            "/js/**", "/css/**", "/editormd/**", "/zTree/**", "/images/**",
-            "/login",
-            "/login/in"
+            "/js/**", "/css/**", "/editormd/**", "/zTree/**", "/images/**"
+
     };
 
     @Override
