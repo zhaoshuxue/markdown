@@ -12,6 +12,9 @@ public class PropertiesConfig {
     @Value("${mdFilePath}")
     private String mdFilePath;
 
+    @Value("${ssoApi}")
+    private String ssoApi;
+
 
 
 }

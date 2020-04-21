@@ -2,6 +2,10 @@ package com.zsx.md;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.zsx.md.config.PropertiesConfig;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
 import com.zsx.md.vo.NoteVO;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +27,14 @@ class UnitTest {
 
     @Autowired
     NoteService noteService;
+
+    @Autowired
+    private PropertiesConfig propertiesConfig;
+
+    @Test
+    void test4() {
+
+    }
 
     @Test
     void test3() {

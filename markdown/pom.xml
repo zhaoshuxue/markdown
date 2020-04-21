@@ -87,6 +87,17 @@
 			<version>5.3.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
+		</dependency>
+
 		<!-- 全称 Java Simplified Encryption，用于加密解密 -->
 		<dependency>
 			<groupId>org.jasypt</groupId>

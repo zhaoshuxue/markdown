@@ -1,9 +1,11 @@
 package com.zsx.md.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.kisso.SSOHelper;
 import com.baomidou.kisso.security.token.SSOToken;
 import com.zsx.md.service.NoteService;
+import com.zsx.md.utils.HttpUtil;
 import com.zsx.md.vo.ResultData;
 import com.zsx.md.vo.NoteVO;
 import com.zsx.md.vo.TreeNode;
@@ -25,7 +27,6 @@ public class NoteController extends BaseController{
     @Autowired
     private NoteService noteService;
 
-
     @GetMapping("tree")
     public ResultData asdf(HttpServletRequest request) {
 
@@ -37,6 +38,12 @@ public class NoteController extends BaseController{
         System.out.println(JSON.toJSONString(ssoToken));
 
         System.out.println(getHeaderUser(request));
+
+        String userId = ssoToken.getId();
+
+        JSONObject userInfo = HttpUtil.getUserInfo(userId);
+
+        System.out.println(JSON.toJSONString(userInfo));
 
 //        Enumeration<String> headerNames = request.getHeaderNames();
 //        while (headerNames.hasMoreElements()) {
