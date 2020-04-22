@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/note")
-public class NoteController extends BaseController{
+public class NoteController extends BaseController {
 
     private static Logger logger = LoggerFactory.getLogger(NoteController.class);
 
@@ -28,38 +28,22 @@ public class NoteController extends BaseController{
     private NoteService noteService;
 
     @GetMapping("tree")
-    public ResultData asdf(HttpServletRequest request) {
+    public ResultData tree(HttpServletRequest request) {
+        ResultData<List<TreeNode>> jsonData = new ResultData<>();
 
-//        System.out.println(JSON.toJSONString(request));
-//        System.out.println(JSON.toJSONString(request.getHeaderNames()));
-
-        SSOToken ssoToken = SSOHelper.getSSOToken(request);
-        System.out.println("打印ssoToken");
-        System.out.println(JSON.toJSONString(ssoToken));
-
-        System.out.println(getHeaderUser(request));
-
-        String userId = ssoToken.getId();
-
-        JSONObject userInfo = HttpUtil.getUserInfo(userId);
-
-        System.out.println(JSON.toJSONString(userInfo));
-
-//        Enumeration<String> headerNames = request.getHeaderNames();
-//        while (headerNames.hasMoreElements()) {
-//            String header = headerNames.nextElement();
-//            String header1 = request.getHeader(header);
-//            System.out.println("header : " + header + " = " + header1);
-//        }
+        String userId = getSessionUser(request);
+        if (userId == null) {
+            jsonData.setSuccess(false);
+            jsonData.setMessage("未登录");
+            return jsonData;
+        }
 
 //        ["host","connection","pragma","cache-control","accept","sec-fetch-dest","user","x-requested-with","user-agent","content-type","sec-fetch-site","sec-fetch-mode","referer","accept-encoding","accept-language","cookie"]
 
         List<TreeNode> list = noteService.getNoteListByUserId(Integer.valueOf(userId));
 
-        ResultData<List<TreeNode>> jsonData = new ResultData<>();
         jsonData.setSuccess(true);
         jsonData.setData(list);
-
         return jsonData;
     }
 

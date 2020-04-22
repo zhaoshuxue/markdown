@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * 自定义权限拦截器
  */
+@Deprecated
 public class AuthInterceptor implements HandlerInterceptor {
 
     private static List<String> excludeUrls = Lists.newArrayList(); // 不需要拦截的资源

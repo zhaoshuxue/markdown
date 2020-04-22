@@ -11,6 +11,7 @@ import com.zsx.md.utils.TreeUtil;
 import com.zsx.md.vo.NoteVO;
 import com.zsx.md.vo.ResultData;
 import com.zsx.md.vo.TreeNode;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,10 @@ public class NoteServiceImpl implements NoteService {
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 
         logger.info(JSON.toJSONString(list));
+        if (CollectionUtils.isEmpty(list)) {
+            initNote(userId);
+            return getNoteListByUserId(userId);
+        }
 
         List<Mnote> mnotes = JSONArray.parseArray(JSON.toJSONString(list), Mnote.class);
 
@@ -54,6 +59,24 @@ public class NoteServiceImpl implements NoteService {
         logger.info(JSON.toJSONString(tree));
 
         return tree;
+    }
+
+    private void initNote(Integer userId) {
+        Mnote note = new Mnote();
+
+        note.setPid(0);
+        note.setUserId(userId);
+        note.setTypes(1);
+        note.setTitle("我的文档");
+        note.setSummary("");
+        note.setContent("");
+        note.setOrders(0);
+        note.setStatus(0);
+        note.setCreatePerson("system");
+
+        String sql = "INSERT INTO m_note (pid, user_id, types, title, summary, content, orders, status, create_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int update = jdbcTemplate.update(sql, note.getPid(), note.getUserId(), note.getTypes(), note.getTitle(), note.getSummary(), note.getContent(), note.getOrders(), note.getStatus(), note.getCreatePerson());
+        logger.info("update = {}", update);
     }
 
     @Override
