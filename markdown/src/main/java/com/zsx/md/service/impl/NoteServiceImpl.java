@@ -114,7 +114,6 @@ public class NoteServiceImpl implements NoteService {
         FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
 
 //        todo
-        noteVO.setUserId(1);
         noteVO.setTypes(1);
         noteVO.setSummary("");
         noteVO.setContent(content);

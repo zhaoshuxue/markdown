@@ -41,6 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         System.out.println(JSON.toJSONString(userInfo));
 
         session.setAttribute(Constants.USERID, userId);
+
         return true;
     }
 }

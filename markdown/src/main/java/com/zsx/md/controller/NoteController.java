@@ -25,10 +25,12 @@ public class NoteController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(NoteController.class);
 
     @Autowired
+    private HttpServletRequest request;
+    @Autowired
     private NoteService noteService;
 
     @GetMapping("tree")
-    public ResultData tree(HttpServletRequest request) {
+    public ResultData tree() {
         ResultData<List<TreeNode>> jsonData = new ResultData<>();
 
         String userId = getSessionUser(request);
@@ -49,8 +51,16 @@ public class NoteController extends BaseController {
 
     @PostMapping("/save")
     public ResultData save(@RequestBody NoteVO note) {
+        ResultData jsonData = new ResultData();
         logger.info(JSON.toJSONString(note));
         if (note.getId() == null) {
+            String userId = getSessionUser(request);
+            if (userId == null) {
+                jsonData.setSuccess(false);
+                jsonData.setMessage("未登录，保存失败");
+                return jsonData;
+            }
+            note.setUserId(Integer.valueOf(userId));
             return noteService.saveNote(note);
         } else {
             return noteService.updateNote(note);
