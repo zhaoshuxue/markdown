@@ -25,16 +25,22 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        long start = System.currentTimeMillis();
         HttpSession session = request.getSession();
-        if (session.getAttribute(Constants.USERID) != null) {
-            return true;
-        }
 
         SSOToken ssoToken = SSOHelper.getSSOToken(request);
         System.out.println("打印ssoToken");
         System.out.println(JSON.toJSONString(ssoToken));
-
         String userId = ssoToken.getId();
+
+        Object userIdObject = session.getAttribute(Constants.USERID);
+        if (userIdObject != null) {
+            if (String.valueOf(userIdObject).equals(userId)) {
+
+                printTime(start);
+                return true;
+            }
+        }
 
         JSONObject userInfo = HttpUtil.getUserInfo(userId);
 
@@ -42,6 +48,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         session.setAttribute(Constants.USERID, userId);
 
+        printTime(start);
         return true;
+    }
+
+    private void printTime(long start) {
+        long end = System.currentTimeMillis();
+        System.out.println("LoginInterceptor耗时：" + (end - start) + "ms");
+
     }
 }
