@@ -55,6 +55,7 @@
 <div class="container">
 
     <div class="left-menu">
+        <button onclick="javascript:logout()">退出</button>
         <button class="add-cls" onclick="javascript:initEditor()">+ 新增</button>
 
         <ul id="treeDemo" class="ztree"></ul>
@@ -358,6 +359,12 @@
 
     }
 
+    function logout(){
+        $.get("/logout", function(res){
+            console.info(res)
+            location.reload()
+        })
+    }
 </script>
 </body>
 </html>
