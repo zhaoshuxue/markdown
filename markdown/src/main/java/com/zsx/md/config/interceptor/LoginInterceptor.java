@@ -33,6 +33,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         System.out.println(JSON.toJSONString(ssoToken));
         String userId = ssoToken.getId();
 
+        // 如果大于1个小时,强制退出
+        if ((System.currentTimeMillis() - ssoToken.getTime()) > (60 * 60 * 1000)) {
+            SSOHelper.clearRedirectLogin(request, response);
+            return false;
+        } else {
+            if ((System.currentTimeMillis() - ssoToken.getTime()) > (30 * 60 * 1000)) {
+                ssoToken.setTime(System.currentTimeMillis());
+                SSOHelper.setCookie(request, response, ssoToken, false);
+            }
+        }
+
         Object userIdObject = session.getAttribute(Constants.USERID);
         if (userIdObject != null) {
             if (String.valueOf(userIdObject).equals(userId)) {
