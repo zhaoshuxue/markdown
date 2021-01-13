@@ -1,11 +1,14 @@
 package com.zsx.md.controller;
 
+import cn.hutool.core.date.DateTime;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.kisso.SSOHelper;
 import com.baomidou.kisso.security.token.SSOToken;
+import com.zsx.md.config.PropertiesConfig;
 import com.zsx.md.service.NoteService;
 import com.zsx.md.utils.HttpUtil;
+import com.zsx.md.utils.ZipUtils;
 import com.zsx.md.vo.ResultData;
 import com.zsx.md.vo.NoteVO;
 import com.zsx.md.vo.TreeNode;
@@ -28,6 +31,23 @@ public class NoteController extends BaseController {
     private HttpServletRequest request;
     @Autowired
     private NoteService noteService;
+    @Autowired
+    private PropertiesConfig propertiesConfig;
+
+    @GetMapping("zip")
+    public ResultData zip() {
+        ResultData<String> resultData = new ResultData<>();
+        String mdFilePath = propertiesConfig.getMdFilePath();
+
+        String time = DateTime.now().toString("yyyy-MM-dd-HH-mm-ss");
+
+        ZipUtils.zipFile(mdFilePath, mdFilePath, time + ".zip");
+
+        resultData.setSuccess(true);
+        resultData.setMessage("成功");
+        resultData.setData(time);
+        return resultData;
+    }
 
     @GetMapping("tree")
     public ResultData tree() {

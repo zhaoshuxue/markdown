@@ -2,6 +2,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.CircleCaptcha;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.ShearCaptcha;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.crypto.KeyUtil;
 import cn.hutool.crypto.symmetric.DES;
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -19,6 +20,13 @@ import java.nio.file.Paths;
 
 public class JavaTest {
 
+
+    @Test
+    public void t1(){
+        String s = DateTime.now().toString("yyyy-MM-dd-HH-mm-ss");
+
+        System.out.println(s);
+    }
 
     @Test
     public void test1() {
