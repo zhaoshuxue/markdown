@@ -66,8 +66,6 @@ public class NoteController extends BaseController {
             return jsonData;
         }
 
-//        ["host","connection","pragma","cache-control","accept","sec-fetch-dest","user","x-requested-with","user-agent","content-type","sec-fetch-site","sec-fetch-mode","referer","accept-encoding","accept-language","cookie"]
-
         List<TreeNode> list = noteService.getNoteListByUserId(Integer.valueOf(userId));
 
         jsonData.setSuccess(true);
