@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface NoteService {
 
-    List<TreeNode> getNoteListByUserId(Integer userId);
+    List<TreeNode> getNoteListByUserId(Integer userId, Integer showTreeId);
 
     /**
      * 获取文章

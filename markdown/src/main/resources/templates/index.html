@@ -119,6 +119,7 @@
     var mdId;
     var pid;
     var parentId;
+    var curId; // 当前展示节点
 
     var curTreeNode;
     var moveTreeNode;
@@ -132,16 +133,28 @@
 
     function initTree(zNodes) {
         zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        // todo
+        if (curId){
+            var treeNode = zTreeObj.getNodeByParam('id', curId, null);
+            var parentTreeNode = zTreeObj.getNodeByParam('id', treeNode.pid, null);
+            // 展开父节点
+            zTreeObj.expandNode(parentTreeNode)
+            // 选中当前节点
+            zTreeObj.selectNode(treeNode)
+            // 触发当前节点的点击事件
+            zTreeObj.setting.callback.onClick(null, curId, treeNode)
+        }
     }
 
-    function getTree() {
+    function getTree(id) {
+        curId = id;
         $.ajax({
             type: "get",
-            url: "/note/tree",
+            url: "/note/tree?id=" + id,
             data: {},
             dataType: "json",
-            beforeSend:function(xhr){
-                xhr.setRequestHeader("User","test123");
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("User", "test123");
             },
             contentType: "application/json;charset=UTF-8",
             success: function (res) {
@@ -220,7 +233,7 @@
                 if (res && res.success) {
                     alert(res.message);
                     // zTreeObj.refresh();
-                    getTree();
+                    getTree(res.data);
                 }
             }
         })
@@ -359,8 +372,8 @@
 
     }
 
-    function logout(){
-        $.get("/logout", function(res){
+    function logout() {
+        $.get("/logout", function (res) {
             console.info(res)
             location.reload()
         })

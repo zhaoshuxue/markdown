@@ -51,7 +51,9 @@ public class NoteController extends BaseController {
     }
 
     @GetMapping("tree")
-    public ResultData tree() {
+    public ResultData tree(
+            @RequestParam(value = "id", required = false) Integer id
+    ) {
         ResultData<List<TreeNode>> jsonData = new ResultData<>();
         String userId = null;
         if ("pro".equals(propertiesConfig.getProfile())) {
@@ -66,7 +68,7 @@ public class NoteController extends BaseController {
             return jsonData;
         }
 
-        List<TreeNode> list = noteService.getNoteListByUserId(Integer.valueOf(userId));
+        List<TreeNode> list = noteService.getNoteListByUserId(Integer.valueOf(userId), id);
 
         jsonData.setSuccess(true);
         jsonData.setData(list);
@@ -77,13 +79,21 @@ public class NoteController extends BaseController {
     public ResultData save(@RequestBody NoteVO note) {
         ResultData jsonData = new ResultData();
         logger.info(JSON.toJSONString(note));
+
+        String userId = null;
+        if ("pro".equals(propertiesConfig.getProfile())) {
+            userId = getSessionUser(request);
+        } else {
+            userId = "1";
+        }
+
+        if (userId == null) {
+            jsonData.setSuccess(false);
+            jsonData.setMessage("未登录，保存失败");
+            return jsonData;
+        }
+
         if (note.getId() == null) {
-            String userId = getSessionUser(request);
-            if (userId == null) {
-                jsonData.setSuccess(false);
-                jsonData.setMessage("未登录，保存失败");
-                return jsonData;
-            }
             note.setUserId(Integer.valueOf(userId));
             return noteService.saveNote(note);
         } else {

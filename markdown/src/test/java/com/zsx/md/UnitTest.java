@@ -79,9 +79,9 @@ class UnitTest {
 
     @Test
     void test1() {
-        List<TreeNode> mnotes = noteService.getNoteListByUserId(1);
+        List<TreeNode> list = noteService.getNoteListByUserId(1, 17);
 
-        System.out.println(JSON.toJSONString(mnotes));
+        System.out.println(JSON.toJSONString(list, true));
     }
 
     @Test

@@ -34,29 +34,29 @@ public class NoteServiceImpl implements NoteService {
     private PropertiesConfig propertiesConfig;
 
     @Override
-    public List<TreeNode> getNoteListByUserId(Integer userId) {
+    public List<TreeNode> getNoteListByUserId(Integer userId, Integer showTreeId) {
 
         String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where status = 0 and user_id = " + userId;
 
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 
-        logger.info(JSON.toJSONString(list));
+        logger.info("数据库中查询结果：{}", JSON.toJSONString(list));
         if (CollectionUtils.isEmpty(list)) {
             initNote(userId);
-            return getNoteListByUserId(userId);
+            return getNoteListByUserId(userId, null);
         }
 
         List<Mnote> mnotes = JSONArray.parseArray(JSON.toJSONString(list), Mnote.class);
 
-        logger.info(JSON.toJSONString(mnotes));
+        logger.info("转换为note对象：{}", JSON.toJSONString(mnotes));
 
         List<TreeNode> treeNodes = TreeUtil.convert(mnotes);
 
         List<TreeNode> tree = TreeUtil.buildTree(treeNodes);
 
-        tree = TreeUtil.sortTree(tree);
+        tree = TreeUtil.sortTree(tree, showTreeId);
 
-        logger.info(JSON.toJSONString(tree));
+        logger.info("得到最终的tree对象：{}", JSON.toJSONString(tree));
 
         return tree;
     }
@@ -125,7 +125,12 @@ public class NoteServiceImpl implements NoteService {
         int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getCreatePerson());
         logger.info("update = {}", update);
 
-        return ResultData.build(true, "保存成功", "");
+        sql = "select id from m_note where pid = ? and content = ? and orders = ?";
+
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, noteVO.getPid(), content, noteVO.getOrders());
+        Map<String, Object> map = list.get(0);
+
+        return ResultData.build(true, "保存成功", map.get("id"));
     }
 
     @Override

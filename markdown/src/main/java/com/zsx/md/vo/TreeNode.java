@@ -15,6 +15,8 @@ public class TreeNode {
 
     private Integer orders;
 
+    private boolean open = false;
+
     private List<TreeNode> children;
 
 }
