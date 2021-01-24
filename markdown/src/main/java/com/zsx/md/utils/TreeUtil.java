@@ -48,16 +48,13 @@ public class TreeUtil {
         return treeNode;
     }
 
-    public static List<TreeNode> sortTree(List<TreeNode> tree, Integer showTreeId) {
+    public static List<TreeNode> sortTree(List<TreeNode> tree) {
         tree.sort(Comparator.comparing(TreeNode::getOrders));
 
         for (TreeNode treeNode : tree) {
-            if (showTreeId != null && treeNode.getId().equals(showTreeId)) {
-                treeNode.setOpen(true);
-            }
             List<TreeNode> children = treeNode.getChildren();
             if (children != null) {
-                sortTree(children, showTreeId);
+                sortTree(children);
             }
         }
         return tree;

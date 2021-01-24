@@ -51,9 +51,7 @@ public class NoteController extends BaseController {
     }
 
     @GetMapping("tree")
-    public ResultData tree(
-            @RequestParam(value = "id", required = false) Integer id
-    ) {
+    public ResultData tree() {
         ResultData<List<TreeNode>> jsonData = new ResultData<>();
         String userId = null;
         if ("pro".equals(propertiesConfig.getProfile())) {
@@ -68,7 +66,7 @@ public class NoteController extends BaseController {
             return jsonData;
         }
 
-        List<TreeNode> list = noteService.getNoteListByUserId(Integer.valueOf(userId), id);
+        List<TreeNode> list = noteService.getNoteListByUserId(Integer.valueOf(userId));
 
         jsonData.setSuccess(true);
         jsonData.setData(list);

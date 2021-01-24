@@ -15,7 +15,7 @@ public class TreeNode {
 
     private Integer orders;
 
-    private boolean open = false;
+//    private boolean open = false;  这个属性不生效 todo
 
     private List<TreeNode> children;
 

@@ -150,7 +150,7 @@
         curId = id;
         $.ajax({
             type: "get",
-            url: "/note/tree?id=" + id,
+            url: "/note/tree",
             data: {},
             dataType: "json",
             beforeSend: function (xhr) {
@@ -293,6 +293,7 @@
         mdId = undefined
         console.log("pid = ", pid)
 
+        $("#title").val("新建文档");
         $("#title").show();
         $("#save").show();
     }
@@ -306,6 +307,7 @@
         pid = parentId;
         console.log("修改后pid = ", pid)
 
+        $("#title").val("新建文档");
         $("#title").show();
         $("#save").show();
     }

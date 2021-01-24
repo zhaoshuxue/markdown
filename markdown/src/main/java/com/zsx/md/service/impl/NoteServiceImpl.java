@@ -34,7 +34,7 @@ public class NoteServiceImpl implements NoteService {
     private PropertiesConfig propertiesConfig;
 
     @Override
-    public List<TreeNode> getNoteListByUserId(Integer userId, Integer showTreeId) {
+    public List<TreeNode> getNoteListByUserId(Integer userId) {
 
         String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where status = 0 and user_id = " + userId;
 
@@ -43,7 +43,7 @@ public class NoteServiceImpl implements NoteService {
         logger.info("数据库中查询结果：{}", JSON.toJSONString(list));
         if (CollectionUtils.isEmpty(list)) {
             initNote(userId);
-            return getNoteListByUserId(userId, null);
+            return getNoteListByUserId(userId);
         }
 
         List<Mnote> mnotes = JSONArray.parseArray(JSON.toJSONString(list), Mnote.class);
@@ -54,7 +54,7 @@ public class NoteServiceImpl implements NoteService {
 
         List<TreeNode> tree = TreeUtil.buildTree(treeNodes);
 
-        tree = TreeUtil.sortTree(tree, showTreeId);
+        tree = TreeUtil.sortTree(tree);
 
         logger.info("得到最终的tree对象：{}", JSON.toJSONString(tree));
 
@@ -136,8 +136,10 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public ResultData<String> updateNote(NoteVO noteVO) {
         ResultData<NoteVO> resultData = this.getNote(noteVO.getId(), false);
+        Integer id = null;
         if (resultData.isSuccess()) {
             NoteVO data = resultData.getData();
+            id = data.getId();
 
             String content = data.getContent();
             FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
@@ -146,10 +148,10 @@ public class NoteServiceImpl implements NoteService {
             String sql = "UPDATE m_note SET title=?, content=?, update_person=? WHERE (id= ?)";
             int update = jdbcTemplate.update(sql, noteVO.getTitle(), content, noteVO.getUpdatePerson(), data.getId());
         } else {
-            this.saveNote(noteVO);
+            return this.saveNote(noteVO);
         }
 //        logger.info("update = {}", update);
-        return ResultData.build(true, "保存成功", "");
+        return ResultData.build(true, "保存成功", id);
     }
 
 
