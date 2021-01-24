@@ -15,6 +15,7 @@ public class PropertiesConfig {
     @Value("${ssoApi}")
     private String ssoApi;
 
-
+    @Value("${spring.profiles.active}")
+    private String profile;
 
 }

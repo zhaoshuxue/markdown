@@ -15,6 +15,7 @@ import com.zsx.md.vo.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +53,13 @@ public class NoteController extends BaseController {
     @GetMapping("tree")
     public ResultData tree() {
         ResultData<List<TreeNode>> jsonData = new ResultData<>();
+        String userId = null;
+        if ("pro".equals(propertiesConfig.getProfile())) {
+            userId = getSessionUser(request);
+        } else {
+            userId = "1";
+        }
 
-        String userId = getSessionUser(request);
         if (userId == null) {
             jsonData.setSuccess(false);
             jsonData.setMessage("未登录");
