@@ -84,11 +84,11 @@
     </ul>
 </div>
 
-
 <script src="/editormd/js/jquery.min.js"></script>
 <script src="/zTree/js/jquery.ztree.core.min.js"></script>
 <script src="/zTree/js/jquery.ztree.exedit.js"></script>
 <script src="/editormd/js/editormd.min.js"></script>
+<script src="/js/message.js"></script>
 <script>
     var zTreeObj;
     // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
@@ -231,7 +231,11 @@
             success: function (res) {
                 console.info(res)
                 if (res && res.success) {
-                    alert(res.message);
+                    // alert(res.message);
+                    $.message({
+                        message: res.message,
+                        type: 'info'
+                    });
                     // zTreeObj.refresh();
                     getTree(res.data);
                 }
