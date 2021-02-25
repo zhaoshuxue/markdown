@@ -144,6 +144,11 @@
             zTreeObj.selectNode(treeNode)
             // 触发当前节点的点击事件
             zTreeObj.setting.callback.onClick(null, curId, treeNode)
+        } else {
+            // todo
+            var treeNode = zTreeObj.getNodeByParam('id', zNodes[0].id, null);
+            // 展开
+            zTreeObj.expandNode(treeNode)
         }
     }
 
