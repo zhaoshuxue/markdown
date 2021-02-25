@@ -88,6 +88,7 @@
 <script src="/zTree/js/jquery.ztree.core.min.js"></script>
 <script src="/zTree/js/jquery.ztree.exedit.js"></script>
 <script src="/editormd/js/editormd.min.js"></script>
+<script src="/js/uploadImg.js"></script>
 <script src="/js/message.js"></script>
 <script>
     var zTreeObj;
@@ -134,7 +135,7 @@
     function initTree(zNodes) {
         zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
         // todo
-        if (curId){
+        if (curId) {
             var treeNode = zTreeObj.getNodeByParam('id', curId, null);
             var parentTreeNode = zTreeObj.getNodeByParam('id', treeNode.pid, null);
             // 展开父节点
@@ -177,6 +178,11 @@
             path: "/editormd/lib/",
             imageUpload: true,
             imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "/upload",
+            onload: function () {
+                // 开启复制粘贴图片上传功能
+                initPasteDragImg(this)
+            }
         })
     }
 

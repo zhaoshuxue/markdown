@@ -11,6 +11,9 @@ public class PropertiesConfig {
 
     @Value("${mdFilePath}")
     private String mdFilePath;
+    
+    @Value("${mdImgFilePath}")
+    private String mdImgFilePath;
 
     @Value("${ssoApi}")
     private String ssoApi;
