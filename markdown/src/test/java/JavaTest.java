@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class JavaTest {
 
@@ -26,6 +28,8 @@ public class JavaTest {
         String s = DateTime.now().toString("yyyy-MM-dd-HH-mm-ss");
 
         System.out.println(s);
+        String yyyyMMdd = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        System.out.println(yyyyMMdd);
     }
 
     @Test

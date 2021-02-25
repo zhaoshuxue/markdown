@@ -1,5 +1,6 @@
 package com.zsx.md.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.Maps;
 import com.zsx.md.config.PropertiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -25,6 +28,8 @@ public class UploadController extends BaseController {
 
     @Autowired
     private PropertiesConfig propertiesConfig;
+
+    private static final DateTimeFormatter yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @RequestMapping(value = "upload")
     @ResponseBody
@@ -42,8 +47,10 @@ public class UploadController extends BaseController {
         // 统一为小写
         fileNameSuffix = fileNameSuffix.toLowerCase();
 
+        String date = LocalDate.now().format(yyyyMMdd);
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        String tempFileName = uuid + fileNameSuffix;
+
+        String tempFileName = date + "-" + uuid + fileNameSuffix;
 
         try {
             file.transferTo(new File(propertiesConfig.getMdImgFilePath() + tempFileName));
