@@ -42,6 +42,26 @@
             font-size: 18px;
             font-weight: bold;
         }
+
+        #progressDiv {
+            position: fixed;
+            width: 200px;
+            top: 100px;
+            margin-left: 48%;
+            background-color: #ddd;
+            z-index: 9999999;
+        }
+
+        #barDiv {
+          width: 10%;
+          height: 30px;
+          background-color: #4CAF50;
+          text-align: center;
+          line-height: 30px;
+          color: white;
+        }
+
+
     </style>
 </head>
 <body oncontextmenu="doNothing()">
@@ -82,6 +102,11 @@
         <li id="m_unCheck" onclick="rename();">重命名</li>
         <li id="m_reset" onclick="resetTree();">删除</li>
     </ul>
+</div>
+
+<!-- 进度条 -->
+<div id="progressDiv">
+    <div id="barDiv"></div>
 </div>
 
 <script src="/editormd/js/jquery.min.js"></script>
@@ -395,6 +420,18 @@
             location.reload()
         })
     }
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>

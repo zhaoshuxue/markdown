@@ -48,12 +48,22 @@ function uploadImg(file, Editor) {
     var fileName = new Date().getTime() + "." + file.type.split("/").pop();
     formData.append('editormd-image-file', file, fileName);
     $.ajax({
-        url: Editor.settings.imageUploadURL,
         type: 'post',
+        url: Editor.settings.imageUploadURL,
         data: formData,
         processData: false,
         contentType: false,
         dataType: 'json',
+        xhr: function xhr() {
+            console.info("2222")
+            var xhr = $.ajaxSettings.xhr()
+            if (xhr.upload) {
+                $("#barDiv").css("width", "0%")
+                $("#progressDiv").show()
+                xhr.upload.addEventListener('progress', uploadProgress, false)
+            }
+            return xhr;
+        },
         success: function (msg) {
             var success = msg['success'];
             if (success == 1) {
@@ -69,4 +79,45 @@ function uploadImg(file, Editor) {
             }
         }
     });
+}
+
+function uploadProgress(e) {
+    console.info("e   ", e)
+    console.info("total=", e.total)
+    console.info("loaded=", e.loaded)
+    console.info("---")
+
+    var num = parseInt(e.loaded / e.total * 100)
+    console.info("---", num)
+
+    $("#barDiv").css("width", num + "%")
+    $("#barDiv").html(num + "%")
+
+    if(num >= 100){
+        $("#progressDiv").hide()
+    }
+
+
+
+
+
+//    var div = document.createElement("div")
+//    div.style.position = "fixed"
+//    div.style.width = "100px"
+//    div.style.height = "100px"
+//    div.style.border = "5px solid red"
+//    div.style.top = "80px"
+//    div.style.left = "48%"
+//    div.style.zIndex = "999999"
+//    div.style.textAlign = "center"
+//
+//    var p = document.createElement("p")
+//    p.innerHTML = "test";
+//
+//    div.appendChild(p)
+//
+//    document.body.appendChild(div)
+
+
+
 }
