@@ -93,12 +93,9 @@ function uploadProgress(e) {
     $("#barDiv").css("width", num + "%")
     $("#barDiv").html(num + "%")
 
-    if(num >= 100){
+    if (num >= 100) {
         $("#progressDiv").hide()
     }
-
-
-
 
 
 //    var div = document.createElement("div")
@@ -117,7 +114,6 @@ function uploadProgress(e) {
 //    div.appendChild(p)
 //
 //    document.body.appendChild(div)
-
 
 
 }
