@@ -36,6 +36,8 @@ public class UploadController extends BaseController {
     public Object uploadImage(@RequestParam(value = "editormd-image-file") MultipartFile file) {
         HashMap<Object, Object> resultData = Maps.newHashMap();
 
+        System.out.println("开始上传文件");
+
         if (file.isEmpty()) {
             resultData.put("success", 0);
             resultData.put("message", "文件不能为空");
@@ -43,6 +45,9 @@ public class UploadController extends BaseController {
         }
 
         String originalFilename = file.getOriginalFilename();
+
+        System.out.println("开始上传文件， 文件名称 = " + originalFilename);
+
         String fileNameSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         // 统一为小写
         fileNameSuffix = fileNameSuffix.toLowerCase();
@@ -60,6 +65,8 @@ public class UploadController extends BaseController {
             resultData.put("url", "/img/" + tempFileName);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            System.out.println("返回文件名 = " + resultData.get("url"));
         }
         return resultData;
     }
