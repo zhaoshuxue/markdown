@@ -9,11 +9,14 @@ function initPasteDragImg(Editor) {
         var file = null;
         if (items && items.length) {
             // 搜索剪切板items
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf('image') !== -1) {
-                    file = items[i].getAsFile();
-                    break;
-                }
+            // for (var i = 0; i < items.length; i++) {
+            //     if (items[i].type.indexOf('image') !== -1) {
+            //         file = items[i].getAsFile();
+            //         break;
+            //     }
+            // }
+            if (items[0].type.indexOf('image') !== -1) {
+                file = items[0].getAsFile();
             }
         } else {
             console.log("当前浏览器不支持");
