@@ -198,14 +198,20 @@
         })
     }
 
-    var initEditor = function (text) {
+    var initEditor2 = function (text) {
+        if (editor) {
+            //editor.editor.remove();
+        }
         if (text == undefined || text == null || text == "") {
             text = "# 标题"
         }
+        console.info(text)
         editor = editormd("editor", {
             width: "100%",
             height: 600,
-            markdown: text,
+            delay: 1000,
+            appendMarkdown: text,
+            // markdown: text,
             path: "/editormd/lib/",
             imageUpload: true,
             imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
@@ -215,6 +221,31 @@
                 initPasteDragImg(this)
             }
         })
+    }
+
+    var initEditor = function (text) {
+        if (text == undefined || text == null || text == "") {
+            text = "# 标题"
+        }
+        if (editor) {
+            editor.setMarkdown(text)
+        }else{
+            editor = editormd("editor", {
+                width: "100%",
+                height: 600,
+                delay: 100,            
+                // markdown: text,
+                path: "/editormd/lib/",
+                imageUpload: true,
+                imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                imageUploadURL: "/upload",
+                onload: function () {
+                    // 开启复制粘贴图片上传功能
+                    initPasteDragImg(this)
+                    editor.setMarkdown(text)
+                }
+            })
+        }
     }
 
     function getData(id) {
