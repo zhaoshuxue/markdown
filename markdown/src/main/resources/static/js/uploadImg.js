@@ -5,21 +5,21 @@
 function initPasteDragImg(Editor) {
     var doc = document.getElementById(Editor.id)
     doc.addEventListener('paste', function (event) {
-        event.preventDefault();
-        // event.stopPropagation();
+        // event.preventDefault();
+        event.stopPropagation();
         var items = (event.clipboardData || window.clipboardData).items;
         var file = null;
         if (items && items.length) {
             // 搜索剪切板items
-            // for (var i = 0; i < items.length; i++) {
-            //     if (items[i].type.indexOf('image') !== -1) {
-            //         file = items[i].getAsFile();
-            //         break;
-            //     }
-            // }
-            if (items[0].type.indexOf('image') !== -1) {
-                file = items[0].getAsFile();
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    file = items[i].getAsFile();
+                    break;
+                }
             }
+            // if (items[0].type.indexOf('image') !== -1) {
+            //     file = items[0].getAsFile();
+            // }
         } else {
             console.log("当前浏览器不支持");
             return;
