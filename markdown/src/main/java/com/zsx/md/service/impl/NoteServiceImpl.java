@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zsx.md.config.PropertiesConfig;
+import com.zsx.md.dao.MnoteDao;
 import com.zsx.md.entity.Mnote;
 import com.zsx.md.service.NoteService;
 import com.zsx.md.utils.FileUtil;
@@ -17,18 +18,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Service
 public class NoteServiceImpl implements NoteService {
 
     private static Logger logger = LoggerFactory.getLogger(NoteServiceImpl.class);
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    @Resource
+    private MnoteDao mnoteDao;
 
     @Autowired
     private PropertiesConfig propertiesConfig;
@@ -36,21 +37,14 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public List<TreeNode> getNoteListByUserId(Integer userId) {
 
-        String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where status = 0 and user_id = " + userId;
-
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-
+        List<Mnote> list = mnoteDao.findByStatusAndUserId(0, userId);
         logger.info("数据库中查询结果：{}", JSON.toJSONString(list));
         if (CollectionUtils.isEmpty(list)) {
             initNote(userId);
             return getNoteListByUserId(userId);
         }
 
-        List<Mnote> mnotes = JSONArray.parseArray(JSON.toJSONString(list), Mnote.class);
-
-        logger.info("转换为note对象：{}", JSON.toJSONString(mnotes));
-
-        List<TreeNode> treeNodes = TreeUtil.convert(mnotes);
+        List<TreeNode> treeNodes = TreeUtil.convert(list);
 
         List<TreeNode> tree = TreeUtil.buildTree(treeNodes);
 
@@ -73,36 +67,34 @@ public class NoteServiceImpl implements NoteService {
         note.setOrders(0);
         note.setStatus(0);
         note.setCreatePerson("system");
+        note.setCreatedTime(new Date());
+        note.setUpdatedTime(new Date());
 
-        String sql = "INSERT INTO m_note (pid, user_id, types, title, summary, content, orders, status, create_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        int update = jdbcTemplate.update(sql, note.getPid(), note.getUserId(), note.getTypes(), note.getTitle(), note.getSummary(), note.getContent(), note.getOrders(), note.getStatus(), note.getCreatePerson());
-        logger.info("update = {}", update);
+        Mnote save = mnoteDao.save(note);
+        logger.info("save = {}", JSON.toJSONString(save));
     }
 
     @Override
     public ResultData<NoteVO> getNote(Integer id, boolean getContent) {
         ResultData<NoteVO> resultData = new ResultData<>();
 
-        String sql = "select id, pid, types, title, summary, content, orders, create_person as createPerson, update_person as updatePerson from m_note where id = ?";
+        Optional<Mnote> mnoteOptional = mnoteDao.findById(id);
+        if (mnoteOptional.isPresent()) {
+            Mnote mnote = mnoteOptional.get();
 
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, id);
-
-        if (list.size() > 0) {
-            Map<String, Object> map = list.get(0);
-            NoteVO mnote = JSONObject.parseObject(JSON.toJSONString(map), NoteVO.class);
+            NoteVO noteVO = JSONObject.parseObject(JSON.toJSONString(mnote), NoteVO.class);
 
             if (getContent) {
-                String content = mnote.getContent();
+                String content = noteVO.getContent();
 
                 String text = FileUtil.readFile(propertiesConfig.getMdFilePath() + content);
 
-                mnote.setText(text);
+                noteVO.setText(text);
             }
 
             resultData.setSuccess(true);
-            resultData.setData(mnote);
+            resultData.setData(noteVO);
         }
-
         return resultData;
     }
 
@@ -121,16 +113,18 @@ public class NoteServiceImpl implements NoteService {
         noteVO.setStatus(0);
         noteVO.setCreatePerson("admin");
 
-        String sql = "INSERT INTO m_note (pid, user_id, types, title, summary, content, orders, status, create_person) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        int update = jdbcTemplate.update(sql, noteVO.getPid(), noteVO.getUserId(), noteVO.getTypes(), noteVO.getTitle(), noteVO.getSummary(), noteVO.getContent(), noteVO.getOrders(), noteVO.getStatus(), noteVO.getCreatePerson());
-        logger.info("update = {}", update);
+        Mnote mnote = JSONObject.parseObject(JSON.toJSONString(noteVO), Mnote.class);
 
-        sql = "select id from m_note where pid = ? and content = ? and orders = ?";
+        Mnote save = mnoteDao.save(mnote);
+        logger.info("save = {}", JSON.toJSONString(save));
 
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, noteVO.getPid(), content, noteVO.getOrders());
-        Map<String, Object> map = list.get(0);
+//        sql = "select id from m_note where pid = ? and content = ? and orders = ?";
+//
+//        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, noteVO.getPid(), content, noteVO.getOrders());
+//        Map<String, Object> map = list.get(0);
 
-        return ResultData.build(true, "保存成功", map.get("id"));
+//        return ResultData.build(true, "保存成功", map.get("id"));
+        return ResultData.build(true, "保存成功", save.getId());
     }
 
     @Override
@@ -144,13 +138,18 @@ public class NoteServiceImpl implements NoteService {
             String content = data.getContent();
             FileUtil.writeFile(noteVO.getText(), propertiesConfig.getMdFilePath() + content);
 
-//            TODO
-            String sql = "UPDATE m_note SET title=?, content=?, update_person=? WHERE (id= ?)";
-            int update = jdbcTemplate.update(sql, noteVO.getTitle(), content, noteVO.getUpdatePerson(), data.getId());
+            Mnote mnote = mnoteDao.findById(id).get();
+            mnote.setTitle(noteVO.getTitle());
+            mnote.setContent(content);
+            mnote.setUpdatePerson(noteVO.getUpdatePerson());
+            mnote.setUpdatedTime(new Date());
+
+            mnoteDao.save(mnote);
+            logger.info("update = {}", JSON.toJSONString(mnote));
+
         } else {
             return this.saveNote(noteVO);
         }
-//        logger.info("update = {}", update);
         return ResultData.build(true, "保存成功", id);
     }
 
@@ -164,6 +163,7 @@ public class NoteServiceImpl implements NoteService {
      * @return
      */
     @Override
+    @Transactional
     public ResultData<String> moveNode(Integer id, Integer target, Integer type) {
         ResultData<String> resultData = new ResultData<>();
         if (id == null || target == null || type == null) {
@@ -177,20 +177,38 @@ public class NoteServiceImpl implements NoteService {
 
         if (type == 1) {
             // 子节点，直接修改pid即可
-            String sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
-            int update = jdbcTemplate.update(sql, target, 1, note.getUpdatePerson(), note.getId());
+//            String sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
+//            int update = jdbcTemplate.update(sql, target, 1, note.getUpdatePerson(), note.getId());
+
+            Mnote mnote = mnoteDao.findById(note.getId()).get();
+            mnote.setPid(target);
+            mnote.setOrders(1);
+            mnote.setUpdatePerson(note.getUpdatePerson());
+            mnote.setUpdatedTime(new Date());
+
+            mnoteDao.save(mnote);
 
         } else if (type == 2) {
             // 成为前节点
             ResultData<NoteVO> targetResultData = this.getNote(target, false);
             NoteVO targetNode = targetResultData.getData();
             // 让目标及下面的节点的排序orders全部+1
-            String sql = "UPDATE m_note SET orders=orders+1, update_person=? WHERE (pid= ? and orders >= ?)";
-            jdbcTemplate.update(sql, note.getUpdatePerson(), targetNode.getPid(), targetNode.getOrders());
+//            String sql = "UPDATE m_note SET orders=orders+1, update_person=? WHERE (pid= ? and orders >= ?)";
+//            jdbcTemplate.update(sql, note.getUpdatePerson(), targetNode.getPid(), targetNode.getOrders());
+            mnoteDao.updateOrders1(targetNode.getPid(), targetNode.getOrders());
+
 
             // 接着 把 节点 替换 目标节点 的位置
-            sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
-            jdbcTemplate.update(sql, targetNode.getPid(), targetNode.getOrders(), note.getUpdatePerson(), note.getId());
+//            sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
+//            jdbcTemplate.update(sql, targetNode.getPid(), targetNode.getOrders(), note.getUpdatePerson(), note.getId());
+
+            mnoteDao.updateOrdersById(targetNode.getPid(), targetNode.getOrders(), note.getId());
+
+//            Mnote mnote = mnoteDao.findById(note.getId()).get();
+//            mnote.setPid(targetNode.getPid());
+//            mnote.setOrders(targetNode.getOrders());
+//
+//            mnoteDao.save(mnote);
 
         } else if (type == 3) {
             // 成为后节点
@@ -198,12 +216,15 @@ public class NoteServiceImpl implements NoteService {
             NoteVO targetNode = targetResultData.getData();
 
             // 让目标下面的节点的排序orders全部+1
-            String sql = "UPDATE m_note SET orders=orders+1, update_person=? WHERE (pid= ? and orders > ?)";
-            jdbcTemplate.update(sql, note.getUpdatePerson(), targetNode.getPid(), targetNode.getOrders());
+//            String sql = "UPDATE m_note SET orders=orders+1, update_person=? WHERE (pid= ? and orders > ?)";
+//            jdbcTemplate.update(sql, note.getUpdatePerson(), targetNode.getPid(), targetNode.getOrders());
+            mnoteDao.updateOrders2(targetNode.getPid(), targetNode.getOrders());
 
             // 接着 把 节点 放到 目标节点 的排序下面的位置
-            sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
-            jdbcTemplate.update(sql, targetNode.getPid(), targetNode.getOrders() + 1, note.getUpdatePerson(), note.getId());
+//            sql = "UPDATE m_note SET pid=?, orders=?, update_person=? WHERE (id= ?)";
+//            jdbcTemplate.update(sql, targetNode.getPid(), targetNode.getOrders() + 1, note.getUpdatePerson(), note.getId());
+            mnoteDao.updateOrdersById(targetNode.getPid(), targetNode.getOrders() + 1, note.getId());
+
         } else {
             resultData.setSuccess(false);
             resultData.setMessage("参数type错误");
